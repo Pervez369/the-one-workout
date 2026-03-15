@@ -345,7 +345,6 @@ header {
 
 .set-dot {
   flex: 1;
-  height: 58px;
   border-radius: 8px;
   border: 1px solid var(--border);
   background: transparent;
@@ -362,21 +361,33 @@ header {
   user-select: none;
   position: relative;
   overflow: hidden;
+  padding: 8px 4px;
 }
-.set-dot .set-num { font-size: 0.72rem; font-weight: 600; }
-.set-dot .set-reps-target { font-size: 0.42rem; color: #666; }
+.set-dot .set-num { font-size: 0.65rem; font-weight: 600; color: #888; }
+.set-dot.hit .set-num { color: rgba(0,0,0,0.5); }
 
-/* Rep counter inside set dot */
-.set-dot .set-rep-count {
-  font-size: 0.9rem;
+/* Rep number input inside set dot */
+.set-dot .rep-input {
+  width: 100%;
+  background: transparent;
+  border: none;
+  color: var(--acc);
+  font-size: 1.3rem;
   font-weight: 700;
-  line-height: 1;
-  color: #c8c8c0;
+  outline: none;
+  text-align: center;
+  font-family: 'IBM Plex Mono', monospace;
+  cursor: text;
+  padding: 0;
+  -webkit-user-select: text;
+  user-select: text;
 }
-.set-dot .set-rep-label {
-  font-size: 0.4rem;
+.set-dot .rep-input::placeholder { color: var(--muted2); font-size: 1rem; }
+.set-dot .rep-label {
+  font-size: 0.38rem;
   color: #555;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
 }
 
 .set-dot:active { transform: scale(0.93); }
@@ -387,23 +398,15 @@ header {
   color: #000;
   font-weight: 700;
 }
-.set-dot.hit .set-rep-count { color: #000; }
-.set-dot.hit .set-rep-label { color: rgba(0,0,0,0.5); }
-.set-dot.hit .set-reps-target { color: rgba(0,0,0,0.4); }
+.set-dot.hit .rep-input { color: #000; }
+.set-dot.hit .rep-input::placeholder { color: rgba(0,0,0,0.3); }
+.set-dot.hit .rep-label { color: rgba(0,0,0,0.4); }
 
 .ex-card.swapped .set-dot.hit { background: var(--blue); border-color: var(--blue); }
+.ex-card.swapped .set-dot.hit .rep-input { color: #000; }
 .ex-card[data-group="db"] .set-dot.hit { background: var(--acc); border-color: var(--acc); color: #000; }
 .ex-card[data-group="core"] .set-dot.hit { background: var(--green); border-color: var(--green); color: #000; }
-
-/* Long-press to reset reps hint */
-.set-dot-hint {
-  position: absolute;
-  bottom: 3px;
-  font-size: 0.35rem;
-  color: #333;
-  letter-spacing: 0.04em;
-}
-.set-dot.has-reps .set-dot-hint { color: #888; }
+.ex-card[data-group="core"] .set-dot.hit .rep-input { color: #000; }
 
 .weight-box {
   display: flex;
@@ -915,21 +918,21 @@ function render() {
     }).join('');
     const totalReps = [1,2,3].reduce((sum, s) => sum + (repCounts[`${ex.id}-${s}`] || 0), 0);
 
-    // Set dots with tap-to-increment reps
+    // Set dots: tap dot border = mark done + start timer; number input inside = reps
     const setDotsHTML = [1,2,3].map(s => {
       const isHit = !!checks[`${ex.id}-${s}`];
-      const rc = repCounts[`${ex.id}-${s}`] || 0;
-      const hasReps = rc > 0;
+      const rc = repCounts[`${ex.id}-${s}`] || '';
       return `
-        <div class="set-dot ${isHit ? 'hit' : ''} ${hasReps ? 'has-reps' : ''}"
+        <div class="set-dot ${isHit ? 'hit' : ''}"
              id="dot-${ex.id}-${s}"
-             ontouchstart="handleDotTouchStart('${ex.id}', ${s}, this)"
-             ontouchend="handleDotTouchEnd(event)"
-             onclick="handleDotClick('${ex.id}', ${s}, this, '${isAlt ? ex.altName : ex.name}')">
+             onclick="handleDotClick('${ex.id}', ${s}, this, '${(isAlt ? ex.altName : ex.name).replace(/'/g,"\\'")}')">
           <span class="set-num">S${s}</span>
-          <span class="set-rep-count">${rc > 0 ? rc : '–'}</span>
-          <span class="set-rep-label">REPS</span>
-          <span class="set-dot-hint">${isHit ? 'hold=reset' : 'tap=+rep'}</span>
+          <input class="rep-input" type="number" inputmode="numeric"
+            placeholder="–"
+            value="${rc}"
+            onclick="event.stopPropagation()"
+            oninput="saveRep('${ex.id}', ${s}, this.value)">
+          <span class="rep-label">reps</span>
         </div>
       `;
     }).join('');
@@ -1010,56 +1013,7 @@ function divider(label) {
   return d;
 }
 
-// ── DOT INTERACTION: tap = +rep, hold = mark done / reset ──
-let holdTimer = null;
-let holdFired = false;
-let dotClickBlocked = false;
-
-function handleDotTouchStart(id, s, el) {
-  holdFired = false;
-  holdTimer = setTimeout(() => {
-    holdFired = true;
-    dotClickBlocked = true;
-    toggleSetDone(id, s, el);
-    if (navigator.vibrate) navigator.vibrate(60);
-  }, 500);
-}
-
-function handleDotTouchEnd(e) {
-  clearTimeout(holdTimer);
-  if (holdFired) {
-    e.preventDefault();
-  }
-  setTimeout(() => { dotClickBlocked = false; }, 50);
-}
-
 function handleDotClick(id, s, el, exName) {
-  if (dotClickBlocked) return;
-  // If already done, tap increments reps still (useful correction)
-  // Single tap = increment rep count
-  incrementRep(id, s, exName);
-}
-
-function incrementRep(id, s, exName) {
-  const key = `${id}-${s}`;
-  repCounts[key] = (repCounts[key] || 0) + 1;
-  save(S.repCounts, repCounts);
-
-  // Update dot display
-  const dot = document.getElementById(`dot-${id}-${s}`);
-  if (dot) {
-    const countEl = dot.querySelector('.set-rep-count');
-    if (countEl) countEl.textContent = repCounts[key];
-    dot.classList.add('has-reps');
-    dot.classList.add('pop');
-    setTimeout(() => dot.classList.remove('pop'), 200);
-  }
-
-  // Update rep summary row
-  updateRepSummary(id);
-}
-
-function toggleSetDone(id, s, el) {
   const key = `${id}-${s}`;
   const wasHit = !!checks[key];
   checks[key] = !wasHit;
@@ -1069,22 +1023,12 @@ function toggleSetDone(id, s, el) {
   el.classList.add('pop');
   setTimeout(() => el.classList.remove('pop'), 200);
 
-  // Update hint text
-  const hint = el.querySelector('.set-dot-hint');
-  if (hint) hint.textContent = !wasHit ? 'hold=reset' : 'tap=+rep';
-
-  // Auto-start timer when marking done
-  if (!wasHit) {
-    const ex = ROUTINE.find(e => e.id === id);
-    const isAlt = !!alts[id];
-    autoStartTimer(isAlt ? ex.altName : ex.name);
-  }
+  if (!wasHit) autoStartTimer(exName);
 
   const allDone = [1,2,3].every(n => !!checks[`${id}-${n}`]);
   const card = el.closest('.ex-card');
   card.classList.toggle('done-card', allDone);
 
-  // Nudge
   const isAlt = !!alts[id];
   const wKey = `${id}_${isAlt ? 'b' : 'a'}`;
   const curW = weights[wKey] || '';
@@ -1097,6 +1041,13 @@ function toggleSetDone(id, s, el) {
   }
 
   updateProgress();
+  updateRepSummary(id);
+}
+
+function saveRep(id, s, val) {
+  const key = `${id}-${s}`;
+  repCounts[key] = val === '' ? 0 : parseInt(val) || 0;
+  save(S.repCounts, repCounts);
   updateRepSummary(id);
 }
 
