@@ -24,7 +24,6 @@
 }
 
 * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
-
 html { scroll-behavior: smooth; }
 
 body {
@@ -46,7 +45,6 @@ header {
   padding-bottom: 14px;
   border-bottom: 1px solid var(--border);
 }
-
 .h-title {
   font-family: 'Bebas Neue', sans-serif;
   font-size: 3.6rem;
@@ -54,7 +52,6 @@ header {
   letter-spacing: 0.02em;
 }
 .h-title span { color: var(--acc); }
-
 .h-right { text-align: right; }
 .h-streak {
   font-size: 1.4rem;
@@ -124,7 +121,6 @@ header {
   z-index: 200;
   margin-bottom: 14px;
 }
-
 .timer-card {
   background: rgba(10,10,10,0.97);
   backdrop-filter: blur(12px);
@@ -138,10 +134,8 @@ header {
   transition: border-color 0.3s;
   box-shadow: 0 4px 24px rgba(0,0,0,0.5);
 }
-
 .timer-card.running { border-color: var(--acc); }
 .timer-card.ready { border-color: var(--green); }
-
 .timer-label {
   font-size: 0.5rem;
   color: #888;
@@ -149,7 +143,6 @@ header {
   text-transform: uppercase;
   margin-bottom: 1px;
 }
-
 .timer-val {
   font-size: 1.5rem;
   font-weight: 600;
@@ -159,13 +152,11 @@ header {
   transition: color 0.3s;
 }
 .timer-card.ready .timer-val { color: var(--green); }
-
 .timer-adjs {
   display: flex;
   flex-direction: column;
   gap: 3px;
 }
-
 .t-adj {
   background: var(--card2);
   color: var(--muted);
@@ -177,9 +168,7 @@ header {
   font-family: 'IBM Plex Mono', monospace;
   line-height: 1.4;
 }
-
 .timer-right { margin-left: auto; display: flex; align-items: center; gap: 8px; }
-
 .t-phase {
   font-size: 0.52rem;
   color: #999;
@@ -187,7 +176,6 @@ header {
   line-height: 1.6;
 }
 .t-phase strong { color: var(--text); display: block; }
-
 .t-btn {
   background: var(--acc);
   color: #000;
@@ -250,24 +238,17 @@ header {
   overflow: hidden;
   transition: border-color 0.25s, opacity 0.3s;
 }
-
 .ex-card.done-card {
   opacity: 0.38;
   border-color: var(--border);
 }
-
 .ex-card.swapped { border-left: 3px solid var(--blue); }
-
-/* Card accent lines by group */
 .ex-card[data-group="machine"] { border-top: 2px solid rgba(232,197,71,0.2); }
 .ex-card[data-group="db"] { border-top: 2px solid rgba(232,197,71,0.2); }
 .ex-card[data-group="core"] { border-top: 2px solid rgba(62,207,110,0.2); }
 
 /* ── CARD HEADER ── */
-.ex-head {
-  padding: 13px 14px 10px;
-}
-
+.ex-head { padding: 13px 14px 10px; }
 .ex-head-row {
   display: flex;
   align-items: flex-start;
@@ -275,9 +256,7 @@ header {
   gap: 8px;
   margin-bottom: 7px;
 }
-
 .ex-name-wrap { flex: 1; }
-
 .ex-name {
   font-family: 'Bebas Neue', sans-serif;
   font-size: 1.45rem;
@@ -288,7 +267,6 @@ header {
 .ex-card.swapped .ex-name { color: var(--blue); }
 .ex-card[data-group="db"] .ex-name { color: var(--acc); }
 .ex-card[data-group="core"] .ex-name { color: var(--green); }
-
 .ex-alt-name {
   font-size: 0.52rem;
   color: var(--muted);
@@ -296,7 +274,6 @@ header {
   display: none;
 }
 .ex-card.swapped .ex-alt-name { display: block; color: var(--blue); }
-
 .alt-btn {
   background: var(--card2);
   color: var(--muted);
@@ -312,14 +289,12 @@ header {
 }
 .alt-btn:active { background: var(--border); }
 .ex-card.swapped .alt-btn { border-color: var(--blue); color: var(--blue); }
-
 .ex-tags {
   display: flex;
   align-items: center;
   gap: 6px;
   flex-wrap: wrap;
 }
-
 .tag {
   font-size: 0.5rem;
   font-weight: 600;
@@ -332,7 +307,6 @@ header {
 .tag-db { background: rgba(232,197,71,0.08); color: var(--acc); border: 1px solid rgba(232,197,71,0.15); }
 .tag-core { background: rgba(62,207,110,0.08); color: var(--green); border: 1px solid rgba(62,207,110,0.15); }
 .tag-reps { background: transparent; color: #aaa; border: 1px solid #333; }
-
 .last-session-row {
   display: flex;
   align-items: center;
@@ -360,18 +334,18 @@ header {
   border-top: 1px solid var(--border);
 }
 
+/* ── SETS + REPS ROW ── */
 .sets-row {
   display: flex;
   align-items: center;
   gap: 8px;
   margin-bottom: 10px;
 }
-
 .set-dots { display: flex; gap: 6px; flex: 1; }
 
 .set-dot {
   flex: 1;
-  height: 52px;
+  height: 58px;
   border-radius: 8px;
   border: 1px solid var(--border);
   background: transparent;
@@ -383,12 +357,28 @@ header {
   transition: all 0.15s;
   font-size: 0.62rem;
   color: #c8c8c0;
-  gap: 3px;
+  gap: 2px;
   -webkit-user-select: none;
   user-select: none;
+  position: relative;
+  overflow: hidden;
 }
 .set-dot .set-num { font-size: 0.72rem; font-weight: 600; }
-.set-dot .set-reps { font-size: 0.48rem; color: #888; opacity: 1; }
+.set-dot .set-reps-target { font-size: 0.42rem; color: #666; }
+
+/* Rep counter inside set dot */
+.set-dot .set-rep-count {
+  font-size: 0.9rem;
+  font-weight: 700;
+  line-height: 1;
+  color: #c8c8c0;
+}
+.set-dot .set-rep-label {
+  font-size: 0.4rem;
+  color: #555;
+  letter-spacing: 0.06em;
+}
+
 .set-dot:active { transform: scale(0.93); }
 
 .set-dot.hit {
@@ -397,9 +387,23 @@ header {
   color: #000;
   font-weight: 700;
 }
+.set-dot.hit .set-rep-count { color: #000; }
+.set-dot.hit .set-rep-label { color: rgba(0,0,0,0.5); }
+.set-dot.hit .set-reps-target { color: rgba(0,0,0,0.4); }
+
 .ex-card.swapped .set-dot.hit { background: var(--blue); border-color: var(--blue); }
 .ex-card[data-group="db"] .set-dot.hit { background: var(--acc); border-color: var(--acc); color: #000; }
 .ex-card[data-group="core"] .set-dot.hit { background: var(--green); border-color: var(--green); color: #000; }
+
+/* Long-press to reset reps hint */
+.set-dot-hint {
+  position: absolute;
+  bottom: 3px;
+  font-size: 0.35rem;
+  color: #333;
+  letter-spacing: 0.04em;
+}
+.set-dot.has-reps .set-dot-hint { color: #888; }
 
 .weight-box {
   display: flex;
@@ -414,7 +418,6 @@ header {
   transition: border-color 0.2s;
 }
 .weight-box:focus-within { border-color: var(--acc); }
-
 .weight-input {
   width: 56px;
   background: transparent;
@@ -428,6 +431,46 @@ header {
 }
 .weight-input::placeholder { color: var(--muted2); font-size: 1.2rem; }
 .weight-unit { font-size: 0.5rem; color: #888; letter-spacing: 0.1em; }
+
+/* ── REP SUMMARY ── */
+.rep-summary {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 10px;
+  align-items: center;
+}
+.rep-summary-label {
+  font-size: 0.5rem;
+  color: #555;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  flex-shrink: 0;
+}
+.rep-summary-pills {
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+}
+.rep-pill {
+  font-size: 0.52rem;
+  background: var(--muted2);
+  color: #aaa;
+  border: 1px solid var(--border);
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-weight: 600;
+}
+.rep-pill.active {
+  background: rgba(232,197,71,0.1);
+  color: var(--acc);
+  border-color: rgba(232,197,71,0.25);
+}
+.rep-total {
+  margin-left: auto;
+  font-size: 0.52rem;
+  color: #555;
+}
+.rep-total span { color: var(--text); font-weight: 600; }
 
 /* ── OVERLOAD NUDGE ── */
 .nudge {
@@ -458,6 +501,51 @@ header {
   font-size: 0.56rem;
   margin-top: 4px;
 }
+
+/* ── NOTES SECTION ── */
+.notes-section {
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid var(--muted2);
+}
+.notes-label {
+  font-size: 0.48rem;
+  color: #555;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-bottom: 5px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.notes-label::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--muted2);
+}
+.notes-input {
+  width: 100%;
+  background: #0c0c0c;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: #ccc;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.6rem;
+  line-height: 1.7;
+  padding: 8px 10px;
+  resize: none;
+  min-height: 48px;
+  outline: none;
+  transition: border-color 0.2s, min-height 0.2s;
+  overflow: hidden;
+}
+.notes-input:focus {
+  border-color: rgba(232,197,71,0.3);
+  min-height: 72px;
+}
+.notes-input::placeholder { color: #2e2e2e; }
+.notes-input:not(:placeholder-shown) { color: #e0ddd6; }
 
 /* ── HOME NOTE (Dead Bug) ── */
 .home-note {
@@ -535,22 +623,13 @@ header {
   from { opacity:0; transform: translateY(16px); }
   to { opacity:1; transform: translateY(0); }
 }
-
 @keyframes popIn {
   0% { transform: scale(1); }
   40% { transform: scale(1.1); }
   100% { transform: scale(1); }
 }
-
 .pop { animation: popIn 0.2s ease; }
 
-@keyframes shake {
-  0%,100% { transform: translateX(0); }
-  25% { transform: translateX(-4px); }
-  75% { transform: translateX(4px); }
-}
-
-/* ── SAFE AREA ── */
 @supports (padding-bottom: env(safe-area-inset-bottom)) {
   body { padding-bottom: calc(120px + env(safe-area-inset-bottom)); }
 }
@@ -636,12 +715,6 @@ header {
 </div>
 
 <script>
-// ══════════════════════════════════════════════
-//  ROUTINE  — final agreed version
-//  Machines: straight sets, one at a time
-//  DB: one exercise, grab bench
-//  Dead Bug: at home note only
-// ══════════════════════════════════════════════
 const ROUTINE = [
   {
     id: 'chest',
@@ -705,25 +778,27 @@ const ROUTINE = [
   }
 ];
 
-// ══════════════════════════════════════════════
-//  STORAGE
-// ══════════════════════════════════════════════
+// ── STORAGE KEYS ──
 const S = {
   checks:  'g1_checks',
   weights: 'g1_weights',
   alts:    'g1_alts',
-  history: 'g1_history',  // last session weights
+  history: 'g1_history',
   warmup:  'g1_warmup',
   streak:  'g1_streak',
-  lastDate:'g1_lastdate'
+  lastDate:'g1_lastdate',
+  repCounts:'g1_repcounts',  // { 'chest-1': 10, 'chest-2': 9, ... }
+  notes:   'g1_notes'        // { 'chest': 'felt strong today', ... }
 };
 
-let checks  = load(S.checks,  {});
-let weights = load(S.weights, {});
-let alts    = load(S.alts,    {});
-let history = load(S.history, {});
-let streak  = parseInt(localStorage.getItem(S.streak) || '0');
-let warmup  = localStorage.getItem(S.warmup) === '1';
+let checks    = load(S.checks,    {});
+let weights   = load(S.weights,   {});
+let alts      = load(S.alts,      {});
+let history   = load(S.history,   {});
+let repCounts = load(S.repCounts, {});
+let notes     = load(S.notes,     {});
+let streak    = parseInt(localStorage.getItem(S.streak) || '0');
+let warmup    = localStorage.getItem(S.warmup) === '1';
 
 function load(key, def) {
   try { return JSON.parse(localStorage.getItem(key)) || def; } catch { return def; }
@@ -732,9 +807,7 @@ function save(key, val) {
   try { localStorage.setItem(key, JSON.stringify(val)); } catch {}
 }
 
-// ══════════════════════════════════════════════
-//  TIMER
-// ══════════════════════════════════════════════
+// ── TIMER ──
 let timerBase    = 90;
 let timerLeft    = 90;
 let timerRunning = false;
@@ -745,17 +818,12 @@ function adjTimer(d) {
   timerBase = Math.max(15, Math.min(300, timerBase + d));
   if (!timerRunning) { timerLeft = timerBase; refreshTimerDisplay(); }
 }
-
-function toggleTimer() {
-  timerRunning ? resetTimer() : startTimer(timerBase);
-}
-
+function toggleTimer() { timerRunning ? resetTimer() : startTimer(timerBase); }
 function autoStartTimer(exName) {
   currentExLabel = exName;
   resetTimer(false);
   startTimer(timerBase);
 }
-
 function startTimer(seconds) {
   timerLeft = seconds;
   timerRunning = true;
@@ -764,7 +832,6 @@ function startTimer(seconds) {
   document.getElementById('timer-card').classList.remove('ready');
   document.getElementById('t-btn').textContent = 'RESET';
   setPhase(`<strong>${currentExLabel || 'RESTING'}</strong>rest in progress`);
-
   timerTick = setInterval(() => {
     timerLeft--;
     refreshTimerDisplay();
@@ -786,7 +853,6 @@ function startTimer(seconds) {
     }
   }, 1000);
 }
-
 function resetTimer(restoreDisplay = true) {
   clearInterval(timerTick);
   timerRunning = false;
@@ -795,40 +861,32 @@ function resetTimer(restoreDisplay = true) {
   document.getElementById('t-btn').textContent = 'START';
   if (restoreDisplay) { refreshTimerDisplay(); setPhase(`<strong>READY</strong>tap set to start`); }
 }
-
 function refreshTimerDisplay() {
   const el = document.getElementById('t-val');
   if (timerLeft > 0) el.textContent = timerLeft + 's';
 }
+function setPhase(html) { document.getElementById('t-phase').innerHTML = html; }
 
-function setPhase(html) {
-  document.getElementById('t-phase').innerHTML = html;
-}
-
-// ══════════════════════════════════════════════
-//  RENDER
-// ══════════════════════════════════════════════
+// ── RENDER ──
 function render() {
   const wrap = document.getElementById('workout');
   wrap.innerHTML = '';
   let shownDB = false;
 
-  ROUTINE.forEach((ex, idx) => {
+  ROUTINE.forEach((ex) => {
     const isAlt = !!alts[ex.id];
     const wKey  = `${ex.id}_${isAlt ? 'b' : 'a'}`;
     const curW  = weights[wKey] || '';
     const lastW = history[wKey] || null;
     const exChecks = [1,2,3].map(s => !!checks[`${ex.id}-${s}`]);
     const allDone  = exChecks.every(Boolean);
-    const hasWeight = true; // all exercises track weight
 
-    // Section dividers
     if (ex.group === 'db' && !shownDB) {
       wrap.appendChild(divider('DUMBBELL — grab a bench · own it'));
       shownDB = true;
     }
 
-    // Last session comparison
+    // Last session row
     let lastHTML = '';
     if (lastW) {
       const cur = parseFloat(curW);
@@ -847,13 +905,41 @@ function render() {
 
     const tagClass = { machine: 'tag-machine', db: 'tag-db', core: 'tag-core' }[ex.group] || 'tag-machine';
     const tagLabel = { machine: 'Machine', db: 'Dumbbell', core: 'Core' }[ex.group] || 'Machine';
+    const nudgeWeight = curW ? (parseFloat(curW) + 2.5).toFixed(1) : null;
+
+    // Rep summary pills
+    const setRepPills = [1,2,3].map(s => {
+      const rc = repCounts[`${ex.id}-${s}`] || 0;
+      const isHit = !!checks[`${ex.id}-${s}`];
+      return `<span class="rep-pill ${isHit ? 'active' : ''}">${rc > 0 ? rc : '—'}</span>`;
+    }).join('');
+    const totalReps = [1,2,3].reduce((sum, s) => sum + (repCounts[`${ex.id}-${s}`] || 0), 0);
+
+    // Set dots with tap-to-increment reps
+    const setDotsHTML = [1,2,3].map(s => {
+      const isHit = !!checks[`${ex.id}-${s}`];
+      const rc = repCounts[`${ex.id}-${s}`] || 0;
+      const hasReps = rc > 0;
+      return `
+        <div class="set-dot ${isHit ? 'hit' : ''} ${hasReps ? 'has-reps' : ''}"
+             id="dot-${ex.id}-${s}"
+             ontouchstart="handleDotTouchStart('${ex.id}', ${s}, this)"
+             ontouchend="handleDotTouchEnd(event)"
+             onclick="handleDotClick('${ex.id}', ${s}, this, '${isAlt ? ex.altName : ex.name}')">
+          <span class="set-num">S${s}</span>
+          <span class="set-rep-count">${rc > 0 ? rc : '–'}</span>
+          <span class="set-rep-label">REPS</span>
+          <span class="set-dot-hint">${isHit ? 'hold=reset' : 'tap=+rep'}</span>
+        </div>
+      `;
+    }).join('');
+
+    const noteVal = notes[ex.id] || '';
 
     const card = document.createElement('div');
     card.className = `ex-card ${isAlt ? 'swapped' : ''} ${allDone ? 'done-card' : ''}`;
     card.dataset.id = ex.id;
     card.dataset.group = ex.group;
-
-    const nudgeWeight = curW ? (parseFloat(curW) + 2.5).toFixed(1) : null;
 
     card.innerHTML = `
       <div class="ex-head">
@@ -873,15 +959,7 @@ function render() {
 
       <div class="ex-body">
         <div class="sets-row">
-          <div class="set-dots">
-            ${[1,2,3].map(s => `
-              <div class="set-dot ${exChecks[s-1] ? 'hit' : ''}"
-                   onclick="hitSet('${ex.id}', ${s}, this, '${isAlt ? ex.altName : ex.name}')">
-                <span class="set-num">S${s}</span>
-                <span class="set-reps">${ex.reps}</span>
-              </div>
-            `).join('')}
-          </div>
+          <div class="set-dots">${setDotsHTML}</div>
           <div class="weight-box">
             <input class="weight-input" type="number" inputmode="decimal"
               placeholder="—" value="${curW}"
@@ -889,6 +967,12 @@ function render() {
               onclick="event.stopPropagation()">
             <div class="weight-unit">KG</div>
           </div>
+        </div>
+
+        <div class="rep-summary">
+          <span class="rep-summary-label">REPS</span>
+          <div class="rep-summary-pills">${setRepPills}</div>
+          <div class="rep-total">total <span>${totalReps > 0 ? totalReps : '—'}</span></div>
         </div>
 
         <div class="nudge ${allDone && nudgeWeight ? 'show' : ''}" id="nudge-${ex.id}">
@@ -899,15 +983,21 @@ function render() {
           ${isAlt ? ex.altCue : ex.cue}
           <div class="disc-note">✓ ${ex.disc}</div>
         </div>
+
+        <div class="notes-section">
+          <div class="notes-label">Notes</div>
+          <textarea class="notes-input"
+            placeholder="how it felt, adjustments, next time..."
+            oninput="saveNote('${ex.id}', this.value); autoResize(this)"
+            onfocus="autoResize(this)">${noteVal}</textarea>
+        </div>
       </div>
     `;
 
     wrap.appendChild(card);
   });
 
-  // Home note for dead bug
   document.getElementById('home-note').style.display = 'block';
-
   updateProgress();
   updateWarmupUI();
   updateHeader();
@@ -920,10 +1010,56 @@ function divider(label) {
   return d;
 }
 
-// ══════════════════════════════════════════════
-//  INTERACTIONS
-// ══════════════════════════════════════════════
-function hitSet(id, s, el, exName) {
+// ── DOT INTERACTION: tap = +rep, hold = mark done / reset ──
+let holdTimer = null;
+let holdFired = false;
+let dotClickBlocked = false;
+
+function handleDotTouchStart(id, s, el) {
+  holdFired = false;
+  holdTimer = setTimeout(() => {
+    holdFired = true;
+    dotClickBlocked = true;
+    toggleSetDone(id, s, el);
+    if (navigator.vibrate) navigator.vibrate(60);
+  }, 500);
+}
+
+function handleDotTouchEnd(e) {
+  clearTimeout(holdTimer);
+  if (holdFired) {
+    e.preventDefault();
+  }
+  setTimeout(() => { dotClickBlocked = false; }, 50);
+}
+
+function handleDotClick(id, s, el, exName) {
+  if (dotClickBlocked) return;
+  // If already done, tap increments reps still (useful correction)
+  // Single tap = increment rep count
+  incrementRep(id, s, exName);
+}
+
+function incrementRep(id, s, exName) {
+  const key = `${id}-${s}`;
+  repCounts[key] = (repCounts[key] || 0) + 1;
+  save(S.repCounts, repCounts);
+
+  // Update dot display
+  const dot = document.getElementById(`dot-${id}-${s}`);
+  if (dot) {
+    const countEl = dot.querySelector('.set-rep-count');
+    if (countEl) countEl.textContent = repCounts[key];
+    dot.classList.add('has-reps');
+    dot.classList.add('pop');
+    setTimeout(() => dot.classList.remove('pop'), 200);
+  }
+
+  // Update rep summary row
+  updateRepSummary(id);
+}
+
+function toggleSetDone(id, s, el) {
   const key = `${id}-${s}`;
   const wasHit = !!checks[key];
   checks[key] = !wasHit;
@@ -933,15 +1069,22 @@ function hitSet(id, s, el, exName) {
   el.classList.add('pop');
   setTimeout(() => el.classList.remove('pop'), 200);
 
-  // Auto-start timer on check (not uncheck)
-  if (!wasHit) autoStartTimer(exName);
+  // Update hint text
+  const hint = el.querySelector('.set-dot-hint');
+  if (hint) hint.textContent = !wasHit ? 'hold=reset' : 'tap=+rep';
 
-  // Check all done
+  // Auto-start timer when marking done
+  if (!wasHit) {
+    const ex = ROUTINE.find(e => e.id === id);
+    const isAlt = !!alts[id];
+    autoStartTimer(isAlt ? ex.altName : ex.name);
+  }
+
   const allDone = [1,2,3].every(n => !!checks[`${id}-${n}`]);
   const card = el.closest('.ex-card');
   card.classList.toggle('done-card', allDone);
 
-  // Show overload nudge
+  // Nudge
   const isAlt = !!alts[id];
   const wKey = `${id}_${isAlt ? 'b' : 'a'}`;
   const curW = weights[wKey] || '';
@@ -954,6 +1097,24 @@ function hitSet(id, s, el, exName) {
   }
 
   updateProgress();
+  updateRepSummary(id);
+}
+
+function updateRepSummary(id) {
+  // Rebuild rep summary pills in place
+  const card = document.querySelector(`[data-id="${id}"]`);
+  if (!card) return;
+  const pills = card.querySelector('.rep-summary-pills');
+  const totalEl = card.querySelector('.rep-total span');
+  if (!pills || !totalEl) return;
+  const newPills = [1,2,3].map(s => {
+    const rc = repCounts[`${id}-${s}`] || 0;
+    const isHit = !!checks[`${id}-${s}`];
+    return `<span class="rep-pill ${isHit ? 'active' : ''}">${rc > 0 ? rc : '—'}</span>`;
+  }).join('');
+  pills.innerHTML = newPills;
+  const total = [1,2,3].reduce((sum, s) => sum + (repCounts[`${id}-${s}`] || 0), 0);
+  totalEl.textContent = total > 0 ? total : '—';
 }
 
 function swapAlt(id) {
@@ -966,29 +1127,34 @@ function saveWeight(id, mode, val) {
   const key = `${id}_${mode}`;
   weights[key] = val;
   save(S.weights, weights);
-  // Live nudge update
   const allDone = [1,2,3].every(n => !!checks[`${id}-${n}`]);
   const nudge = document.getElementById(`nudge-${id}`);
   if (nudge && allDone && val) {
     nudge.innerHTML = `↑ All sets complete — next session try <strong>${(parseFloat(val)+2.5).toFixed(1)}kg</strong>`;
     nudge.classList.add('show');
   }
-  // Live PB detection
   const lastW = history[key];
   if (lastW && parseFloat(val) > parseFloat(lastW)) {
-    render(); // refresh to show PB badge
+    render();
   }
 }
 
-// ══════════════════════════════════════════════
-//  WARMUP
-// ══════════════════════════════════════════════
+function saveNote(id, val) {
+  notes[id] = val;
+  save(S.notes, notes);
+}
+
+function autoResize(el) {
+  el.style.height = 'auto';
+  el.style.height = Math.max(48, el.scrollHeight) + 'px';
+}
+
+// ── WARMUP ──
 function toggleWarmup() {
   warmup = !warmup;
   localStorage.setItem(S.warmup, warmup ? '1' : '0');
   updateWarmupUI();
 }
-
 function updateWarmupUI() {
   const card = document.getElementById('warmup-card');
   const tick = document.getElementById('warmup-tick');
@@ -996,9 +1162,7 @@ function updateWarmupUI() {
   tick.textContent = warmup ? '✓' : '→';
 }
 
-// ══════════════════════════════════════════════
-//  PROGRESS
-// ══════════════════════════════════════════════
+// ── PROGRESS ──
 function updateProgress() {
   const total = ROUTINE.length;
   const done  = ROUTINE.filter(ex => [1,2,3].every(s => !!checks[`${ex.id}-${s}`])).length;
@@ -1010,57 +1174,59 @@ function updateProgress() {
   screen.classList.toggle('show', isDone);
 
   if (isDone) {
-    // Build done stats
-    const stats = document.getElementById('done-stats');
-    stats.innerHTML = `
+    const totalReps = Object.values(repCounts).reduce((a, b) => a + b, 0);
+    document.getElementById('done-stats').innerHTML = `
       <div class="done-stat">
         <div class="done-stat-val">${total * 3}</div>
         <div class="done-stat-label">total sets</div>
       </div>
       <div class="done-stat">
+        <div class="done-stat-val">${totalReps || '—'}</div>
+        <div class="done-stat-label">total reps</div>
+      </div>
+      <div class="done-stat">
         <div class="done-stat-val">${streak + 1}</div>
         <div class="done-stat-label">sessions total</div>
+      </div>
+      <div class="done-stat">
+        <div class="done-stat-val">⚡</div>
+        <div class="done-stat-label">done</div>
       </div>
     `;
     screen.scrollIntoView({ behavior: 'smooth', block: 'center' });
   }
 }
 
-// ══════════════════════════════════════════════
-//  HEADER
-// ══════════════════════════════════════════════
+// ── HEADER ──
 function updateHeader() {
   const last = localStorage.getItem(S.lastDate);
   document.getElementById('last-date').textContent = last ? `LAST: ${last}` : 'LAST: —';
   document.getElementById('streak-display').textContent = streak + '🔥';
 }
 
-// ══════════════════════════════════════════════
-//  LOG SESSION
-// ══════════════════════════════════════════════
+// ── LOG SESSION ──
 function logSession() {
   const done = ROUTINE.filter(ex => [1,2,3].every(s => !!checks[`${ex.id}-${s}`])).length;
   const msg = done < ROUTINE.length
     ? `Only ${done}/${ROUTINE.length} exercises done. Log anyway and reset?`
     : 'Log this session and reset for next time?';
-
   if (!confirm(msg)) return;
 
-  // Save weights as history for next session comparison
   history = { ...weights };
   save(S.history, history);
 
-  // Log streak + date
   streak++;
   localStorage.setItem(S.streak, streak);
   const d = new Date();
   const dateStr = d.toLocaleDateString('en-AU', { weekday:'short', day:'2-digit', month:'short' });
   localStorage.setItem(S.lastDate, dateStr);
 
-  // Reset session state
+  // Reset session state but keep notes
   checks = {};
+  repCounts = {};
   warmup = false;
   save(S.checks, checks);
+  save(S.repCounts, repCounts);
   localStorage.setItem(S.warmup, '0');
 
   resetTimer();
@@ -1068,11 +1234,14 @@ function logSession() {
   render();
 }
 
-// ══════════════════════════════════════════════
-//  INIT
-// ══════════════════════════════════════════════
+// ── INIT ──
 render();
 setPhase(`<strong>READY</strong>tap set to start`);
+
+// Auto-resize any pre-filled notes on load
+document.querySelectorAll('.notes-input').forEach(el => {
+  if (el.value) autoResize(el);
+});
 </script>
 </body>
 </html>
