@@ -314,10 +314,15 @@ header {
   font-size: 0.54rem;
   color: #888;
   margin-top: 6px;
+  flex-wrap: wrap;
 }
 .last-val { color: var(--text); font-weight: 600; }
 .last-arrow-up { color: var(--green); }
 .last-arrow-same { color: var(--muted); }
+.last-reps-val {
+  color: var(--purple);
+  font-weight: 600;
+}
 .pb-badge {
   font-size: 0.48rem;
   background: rgba(62,207,110,0.1);
@@ -366,7 +371,6 @@ header {
 .set-dot .set-num { font-size: 0.65rem; font-weight: 600; color: #888; }
 .set-dot.hit .set-num { color: rgba(0,0,0,0.5); }
 
-/* Rep number input inside set dot */
 .set-dot .rep-input {
   width: 100%;
   background: transparent;
@@ -389,6 +393,14 @@ header {
   letter-spacing: 0.08em;
   text-transform: uppercase;
 }
+/* last session rep ghost shown below rep-label */
+.set-dot .rep-last {
+  font-size: 0.38rem;
+  color: #5a4f8a;
+  letter-spacing: 0.04em;
+  line-height: 1.2;
+}
+.set-dot.hit .rep-last { color: rgba(0,0,0,0.3); }
 
 .set-dot:active { transform: scale(0.93); }
 
@@ -783,25 +795,27 @@ const ROUTINE = [
 
 // ── STORAGE KEYS ──
 const S = {
-  checks:  'g1_checks',
-  weights: 'g1_weights',
-  alts:    'g1_alts',
-  history: 'g1_history',
-  warmup:  'g1_warmup',
-  streak:  'g1_streak',
-  lastDate:'g1_lastdate',
-  repCounts:'g1_repcounts',  // { 'chest-1': 10, 'chest-2': 9, ... }
-  notes:   'g1_notes'        // { 'chest': 'felt strong today', ... }
+  checks:     'g1_checks',
+  weights:    'g1_weights',
+  alts:       'g1_alts',
+  history:    'g1_history',
+  warmup:     'g1_warmup',
+  streak:     'g1_streak',
+  lastDate:   'g1_lastdate',
+  repCounts:  'g1_repcounts',
+  notes:      'g1_notes',
+  repHistory: 'g1_rephist'
 };
 
-let checks    = load(S.checks,    {});
-let weights   = load(S.weights,   {});
-let alts      = load(S.alts,      {});
-let history   = load(S.history,   {});
-let repCounts = load(S.repCounts, {});
-let notes     = load(S.notes,     {});
-let streak    = parseInt(localStorage.getItem(S.streak) || '0');
-let warmup    = localStorage.getItem(S.warmup) === '1';
+let checks     = load(S.checks,     {});
+let weights    = load(S.weights,    {});
+let alts       = load(S.alts,       {});
+let history    = load(S.history,    {});
+let repCounts  = load(S.repCounts,  {});
+let notes      = load(S.notes,      {});
+let repHistory = load(S.repHistory, {});
+let streak     = parseInt(localStorage.getItem(S.streak) || '0');
+let warmup     = localStorage.getItem(S.warmup) === '1';
 
 function load(key, def) {
   try { return JSON.parse(localStorage.getItem(key)) || def; } catch { return def; }
@@ -811,10 +825,10 @@ function save(key, val) {
 }
 
 // ── TIMER ──
-let timerBase    = 90;
-let timerLeft    = 90;
-let timerRunning = false;
-let timerTick    = null;
+let timerBase      = 90;
+let timerLeft      = 90;
+let timerRunning   = false;
+let timerTick      = null;
 let currentExLabel = '';
 
 function adjTimer(d) {
@@ -877,10 +891,10 @@ function render() {
   let shownDB = false;
 
   ROUTINE.forEach((ex) => {
-    const isAlt = !!alts[ex.id];
-    const wKey  = `${ex.id}_${isAlt ? 'b' : 'a'}`;
-    const curW  = weights[wKey] || '';
-    const lastW = history[wKey] || null;
+    const isAlt  = !!alts[ex.id];
+    const wKey   = `${ex.id}_${isAlt ? 'b' : 'a'}`;
+    const curW   = weights[wKey] || '';
+    const lastW  = history[wKey] || null;
     const exChecks = [1,2,3].map(s => !!checks[`${ex.id}-${s}`]);
     const allDone  = exChecks.every(Boolean);
 
@@ -889,18 +903,26 @@ function render() {
       shownDB = true;
     }
 
-    // Last session row
+    // ── Last session row (weight + reps) ──
+    const lastRepData = repHistory[ex.id] || null;
+    let lastRepStr = '';
+    if (lastRepData) {
+      lastRepStr = [1,2,3].map(s => {
+        const v = lastRepData[`${ex.id}-${s}`];
+        return (v && v > 0) ? v : '?';
+      }).join(' / ');
+    }
+
     let lastHTML = '';
-    if (lastW) {
-      const cur = parseFloat(curW);
+    if (lastW || lastRepStr) {
+      const cur  = parseFloat(curW);
       const prev = parseFloat(lastW);
-      const isPB = cur > prev;
-      const isSame = cur === prev || (!curW && lastW);
+      const isPB = curW && lastW && cur > prev;
       lastHTML = `
         <div class="last-session-row">
-          <span>LAST: <span class="last-val">${lastW}kg</span></span>
+          ${lastW ? `<span>LAST: <span class="last-val">${lastW}kg</span></span>` : ''}
+          ${lastRepStr ? `<span style="color:#333">·</span><span>REPS: <span class="last-reps-val">${lastRepStr}</span></span>` : ''}
           ${isPB ? '<span class="last-arrow-up">↑ PB</span><span class="pb-badge">NEW PB</span>' : ''}
-          ${isSame && curW ? '<span class="last-arrow-same">= same</span>' : ''}
         </div>`;
     } else {
       lastHTML = `<div class="last-session-row"><span style="color:#2a2a2a">no history yet</span></div>`;
@@ -912,16 +934,18 @@ function render() {
 
     // Rep summary pills
     const setRepPills = [1,2,3].map(s => {
-      const rc = repCounts[`${ex.id}-${s}`] || 0;
+      const rc    = repCounts[`${ex.id}-${s}`] || 0;
       const isHit = !!checks[`${ex.id}-${s}`];
       return `<span class="rep-pill ${isHit ? 'active' : ''}">${rc > 0 ? rc : '—'}</span>`;
     }).join('');
     const totalReps = [1,2,3].reduce((sum, s) => sum + (repCounts[`${ex.id}-${s}`] || 0), 0);
 
-    // Set dots: tap dot border = mark done + start timer; number input inside = reps
+    // Set dots — last session rep ghost shown inside each dot
     const setDotsHTML = [1,2,3].map(s => {
-      const isHit = !!checks[`${ex.id}-${s}`];
-      const rc = repCounts[`${ex.id}-${s}`] || '';
+      const isHit  = !!checks[`${ex.id}-${s}`];
+      const rc     = repCounts[`${ex.id}-${s}`] || '';
+      const lastRc = lastRepData ? (lastRepData[`${ex.id}-${s}`] || 0) : 0;
+      const lastGhost = lastRc > 0 ? `<span class="rep-last">prev:${lastRc}</span>` : '';
       return `
         <div class="set-dot ${isHit ? 'hit' : ''}"
              id="dot-${ex.id}-${s}"
@@ -931,8 +955,9 @@ function render() {
             placeholder="–"
             value="${rc}"
             onclick="event.stopPropagation()"
-            oninput="saveRep('${ex.id}', ${s}, this.value)">
+            oninput="saveRep('${ex.id}', ${s}, this.value, this)">
           <span class="rep-label">reps</span>
+          ${lastGhost}
         </div>
       `;
     }).join('');
@@ -941,7 +966,7 @@ function render() {
 
     const card = document.createElement('div');
     card.className = `ex-card ${isAlt ? 'swapped' : ''} ${allDone ? 'done-card' : ''}`;
-    card.dataset.id = ex.id;
+    card.dataset.id    = ex.id;
     card.dataset.group = ex.group;
 
     card.innerHTML = `
@@ -1013,10 +1038,11 @@ function divider(label) {
   return d;
 }
 
+// ── DOT CLICK (manual tap to mark done) ──
 function handleDotClick(id, s, el, exName) {
-  const key = `${id}-${s}`;
+  const key    = `${id}-${s}`;
   const wasHit = !!checks[key];
-  checks[key] = !wasHit;
+  checks[key]  = !wasHit;
   save(S.checks, checks);
 
   el.classList.toggle('hit', !wasHit);
@@ -1026,12 +1052,12 @@ function handleDotClick(id, s, el, exName) {
   if (!wasHit) autoStartTimer(exName);
 
   const allDone = [1,2,3].every(n => !!checks[`${id}-${n}`]);
-  const card = el.closest('.ex-card');
+  const card    = el.closest('.ex-card');
   card.classList.toggle('done-card', allDone);
 
   const isAlt = !!alts[id];
-  const wKey = `${id}_${isAlt ? 'b' : 'a'}`;
-  const curW = weights[wKey] || '';
+  const wKey  = `${id}_${isAlt ? 'b' : 'a'}`;
+  const curW  = weights[wKey] || '';
   const nudge = document.getElementById(`nudge-${id}`);
   if (nudge && allDone && curW) {
     nudge.innerHTML = `↑ All sets complete — next session try <strong>${(parseFloat(curW)+2.5).toFixed(1)}kg</strong>`;
@@ -1044,22 +1070,67 @@ function handleDotClick(id, s, el, exName) {
   updateRepSummary(id);
 }
 
-function saveRep(id, s, val) {
+// ── SAVE REP — auto-marks set done when reps entered ──
+function saveRep(id, s, val, inputEl) {
   const key = `${id}-${s}`;
-  repCounts[key] = val === '' ? 0 : parseInt(val) || 0;
+  const num = val === '' ? 0 : parseInt(val) || 0;
+  repCounts[key] = num;
   save(S.repCounts, repCounts);
+
+  // Auto-mark set as hit when a rep count is typed
+  if (num > 0 && !checks[key]) {
+    checks[key] = true;
+    save(S.checks, checks);
+
+    const dot = document.getElementById(`dot-${id}-${s}`);
+    if (dot) {
+      dot.classList.add('hit', 'pop');
+      setTimeout(() => dot.classList.remove('pop'), 200);
+
+      const exName = dot.closest('.ex-card').querySelector('.ex-name').textContent;
+      autoStartTimer(exName);
+    }
+
+    const allDone = [1,2,3].every(n => !!checks[`${id}-${n}`]);
+    const card    = inputEl ? inputEl.closest('.ex-card') : null;
+    if (card) card.classList.toggle('done-card', allDone);
+
+    const isAlt = !!alts[id];
+    const wKey  = `${id}_${isAlt ? 'b' : 'a'}`;
+    const curW  = weights[wKey] || '';
+    const nudge = document.getElementById(`nudge-${id}`);
+    if (nudge && allDone && curW) {
+      nudge.innerHTML = `↑ All sets complete — next session try <strong>${(parseFloat(curW)+2.5).toFixed(1)}kg</strong>`;
+      nudge.classList.add('show');
+    }
+
+    updateProgress();
+  }
+
+  // If cleared back to 0, unmark the dot
+  if (num === 0 && checks[key]) {
+    checks[key] = false;
+    save(S.checks, checks);
+    const dot = document.getElementById(`dot-${id}-${s}`);
+    if (dot) dot.classList.remove('hit');
+    const card = inputEl ? inputEl.closest('.ex-card') : null;
+    if (card) card.classList.remove('done-card');
+    const nudge = document.getElementById(`nudge-${id}`);
+    if (nudge) nudge.classList.remove('show');
+    updateProgress();
+  }
+
   updateRepSummary(id);
 }
 
 function updateRepSummary(id) {
-  // Rebuild rep summary pills in place
   const card = document.querySelector(`[data-id="${id}"]`);
   if (!card) return;
-  const pills = card.querySelector('.rep-summary-pills');
+  const pills   = card.querySelector('.rep-summary-pills');
   const totalEl = card.querySelector('.rep-total span');
   if (!pills || !totalEl) return;
   const newPills = [1,2,3].map(s => {
-    const rc = repCounts[`${id}-${s}`] || 0;
+    const rc    = repCounts[`${id}-${s}`] || 0;
     const isHit = !!checks[`${id}-${s}`];
     return `<span class="rep-pill ${isHit ? 'active' : ''}">${rc > 0 ? rc : '—'}</span>`;
   }).join('');
@@ -1079,7 +1150,7 @@ function saveWeight(id, mode, val) {
   weights[key] = val;
   save(S.weights, weights);
   const allDone = [1,2,3].every(n => !!checks[`${id}-${n}`]);
-  const nudge = document.getElementById(`nudge-${id}`);
+  const nudge   = document.getElementById(`nudge-${id}`);
   if (nudge && allDone && val) {
     nudge.innerHTML = `↑ All sets complete — next session try <strong>${(parseFloat(val)+2.5).toFixed(1)}kg</strong>`;
     nudge.classList.add('show');
@@ -1117,7 +1188,7 @@ function updateWarmupUI() {
 function updateProgress() {
   const total = ROUTINE.length;
   const done  = ROUTINE.filter(ex => [1,2,3].every(s => !!checks[`${ex.id}-${s}`])).length;
-  document.getElementById('prog-fill').style.width = (done/total*100) + '%';
+  document.getElementById('prog-fill').style.width = (done / total * 100) + '%';
   document.getElementById('prog-text').textContent = `${done} / ${total} exercises`;
 
   const isDone = done === total;
@@ -1125,7 +1196,7 @@ function updateProgress() {
   screen.classList.toggle('show', isDone);
 
   if (isDone) {
-    const totalReps = Object.values(repCounts).reduce((a, b) => a + b, 0);
+    const totalReps = Object.values(repCounts).reduce((a, b) => a + (b || 0), 0);
     document.getElementById('done-stats').innerHTML = `
       <div class="done-stat">
         <div class="done-stat-val">${total * 3}</div>
@@ -1158,24 +1229,37 @@ function updateHeader() {
 // ── LOG SESSION ──
 function logSession() {
   const done = ROUTINE.filter(ex => [1,2,3].every(s => !!checks[`${ex.id}-${s}`])).length;
-  const msg = done < ROUTINE.length
+  const msg  = done < ROUTINE.length
     ? `Only ${done}/${ROUTINE.length} exercises done. Log anyway and reset?`
     : 'Log this session and reset for next time?';
   if (!confirm(msg)) return;
 
+  // Save weight history
   history = { ...weights };
   save(S.history, history);
 
+  // Save rep history — keyed by exercise id, then set number
+  repHistory = {};
+  ROUTINE.forEach(ex => {
+    const data = {};
+    [1,2,3].forEach(s => {
+      data[`${ex.id}-${s}`] = repCounts[`${ex.id}-${s}`] || 0;
+    });
+    repHistory[ex.id] = data;
+  });
+  save(S.repHistory, repHistory);
+
+  // Update streak + date
   streak++;
   localStorage.setItem(S.streak, streak);
-  const d = new Date();
+  const d       = new Date();
   const dateStr = d.toLocaleDateString('en-AU', { weekday:'short', day:'2-digit', month:'short' });
   localStorage.setItem(S.lastDate, dateStr);
 
-  // Reset session state but keep notes
-  checks = {};
+  // Reset session state (keep notes + weights)
+  checks    = {};
   repCounts = {};
-  warmup = false;
+  warmup    = false;
   save(S.checks, checks);
   save(S.repCounts, repCounts);
   localStorage.setItem(S.warmup, '0');
@@ -1189,7 +1273,6 @@ function logSession() {
 render();
 setPhase(`<strong>READY</strong>tap set to start`);
 
-// Auto-resize any pre-filled notes on load
 document.querySelectorAll('.notes-input').forEach(el => {
   if (el.value) autoResize(el);
 });
