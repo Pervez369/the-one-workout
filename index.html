@@ -344,6 +344,9 @@ header {
 }
 .alt-btn:active { background: var(--border); }
 .ex-card.swapped .alt-btn { border-color: var(--blue); color: var(--blue); }
+.head-btns { display: flex; flex-direction: column; gap: 4px; align-items: stretch; flex-shrink: 0; }
+.demo-btn { color: #888; }
+.demo-btn:active { color: var(--text); }
 .ex-tags {
   display: flex;
   align-items: center;
@@ -1357,7 +1360,10 @@ function buildCard(rid, ex) {
           <div class="ex-name">${esc(isAlt ? ex.altName : ex.name)}</div>
           <div class="ex-alt-name">ALT MODE · main: ${esc(ex.name)}</div>
         </div>
-        ${ex.altName ? `<button class="alt-btn" onclick="swapAlt('${rid}','${ex.id}')">ALT ⇄</button>` : ''}
+        <div class="head-btns">
+          ${ex.altName ? `<button class="alt-btn" onclick="swapAlt('${rid}','${ex.id}')">ALT ⇄</button>` : ''}
+          <button class="alt-btn demo-btn" onclick="openDemo('${rid}','${ex.id}')">▶ DEMO</button>
+        </div>
       </div>
       <div class="ex-tags">
         <span class="tag ${tagClass}">${tagLabel}</span>
@@ -1484,6 +1490,11 @@ function swapAlt(rid, exId) {
   alts[k] = !alts[k];
   save(S.alts, alts);
   render();
+}
+function openDemo(rid, exId) {
+  const ex = findEx(rid, exId); if (!ex) return;
+  const name = alts[ak(rid, exId)] ? (ex.altName || ex.name) : ex.name;
+  window.open('https://www.youtube.com/results?search_query=' + encodeURIComponent(name + ' proper form how to'), '_blank');
 }
 function autoResize(el) {
   el.style.height = 'auto';
