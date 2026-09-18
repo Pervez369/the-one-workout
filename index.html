@@ -41,7 +41,7 @@ header {
   display: flex;
   justify-content: space-between;
   align-items: flex-end;
-  margin-bottom: 16px;
+  margin-bottom: 14px;
   padding-bottom: 14px;
   border-bottom: 1px solid var(--border);
 }
@@ -67,6 +67,60 @@ header {
   margin-top: 4px;
 }
 .h-meta strong { color: var(--text); }
+
+/* ── TABS ── */
+.tabs { display:flex; gap:6px; margin-bottom:14px; }
+.tab {
+  flex:1;
+  background: var(--card);
+  border: 1px solid var(--border);
+  color: var(--muted);
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.6rem;
+  letter-spacing: 0.1em;
+  padding: 10px 0;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.tab.active { background: var(--acc); border-color: var(--acc); color:#000; font-weight:700; }
+
+/* ── DAY PILLS ── */
+.day-pills { display:flex; gap:6px; margin-bottom:14px; flex-wrap:wrap; }
+.day-pill {
+  position: relative;
+  background: var(--card);
+  border: 1px solid var(--border);
+  color: var(--muted);
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 0.6rem;
+  cursor: pointer;
+  font-family: 'IBM Plex Mono', monospace;
+  letter-spacing: 0.06em;
+  transition: all 0.15s;
+}
+.day-pill.active {
+  border-color: var(--acc);
+  color: var(--acc);
+  background: rgba(232,197,71,0.06);
+  font-weight: 700;
+}
+.day-pill .next-chip {
+  position: absolute;
+  top: -7px; right: -4px;
+  font-size: 0.4rem;
+  background: var(--green);
+  color: #000;
+  padding: 1px 5px;
+  border-radius: 3px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+}
+
+/* ── VIEWS ── */
+.view { display:none; }
+.view.show { display:block; }
 
 /* ── WARMUP ── */
 .warmup-card {
@@ -246,6 +300,7 @@ header {
 .ex-card[data-group="machine"] { border-top: 2px solid rgba(232,197,71,0.2); }
 .ex-card[data-group="db"] { border-top: 2px solid rgba(232,197,71,0.2); }
 .ex-card[data-group="core"] { border-top: 2px solid rgba(62,207,110,0.2); }
+.ex-card[data-group="finisher"] { border-top: 2px solid rgba(167,139,250,0.2); }
 
 /* ── CARD HEADER ── */
 .ex-head { padding: 13px 14px 10px; }
@@ -265,8 +320,8 @@ header {
   color: var(--acc);
 }
 .ex-card.swapped .ex-name { color: var(--blue); }
-.ex-card[data-group="db"] .ex-name { color: var(--acc); }
 .ex-card[data-group="core"] .ex-name { color: var(--green); }
+.ex-card[data-group="finisher"] .ex-name { color: var(--purple); }
 .ex-alt-name {
   font-size: 0.52rem;
   color: var(--muted);
@@ -306,6 +361,7 @@ header {
 .tag-machine { background: rgba(232,197,71,0.08); color: var(--acc); border: 1px solid rgba(232,197,71,0.15); }
 .tag-db { background: rgba(232,197,71,0.08); color: var(--acc); border: 1px solid rgba(232,197,71,0.15); }
 .tag-core { background: rgba(62,207,110,0.08); color: var(--green); border: 1px solid rgba(62,207,110,0.15); }
+.tag-finisher { background: rgba(167,139,250,0.08); color: var(--purple); border: 1px solid rgba(167,139,250,0.18); }
 .tag-reps { background: transparent; color: #aaa; border: 1px solid #333; }
 .last-session-row {
   display: flex;
@@ -393,7 +449,6 @@ header {
   letter-spacing: 0.08em;
   text-transform: uppercase;
 }
-/* last session rep ghost shown below rep-label */
 .set-dot .rep-last {
   font-size: 0.38rem;
   color: #5a4f8a;
@@ -416,9 +471,10 @@ header {
 
 .ex-card.swapped .set-dot.hit { background: var(--blue); border-color: var(--blue); }
 .ex-card.swapped .set-dot.hit .rep-input { color: #000; }
-.ex-card[data-group="db"] .set-dot.hit { background: var(--acc); border-color: var(--acc); color: #000; }
 .ex-card[data-group="core"] .set-dot.hit { background: var(--green); border-color: var(--green); color: #000; }
 .ex-card[data-group="core"] .set-dot.hit .rep-input { color: #000; }
+.ex-card[data-group="finisher"] .set-dot.hit { background: var(--purple); border-color: var(--purple); color: #000; }
+.ex-card[data-group="finisher"] .set-dot.hit .rep-input { color: #000; }
 
 .weight-box {
   display: flex;
@@ -562,7 +618,7 @@ header {
 .notes-input::placeholder { color: #2e2e2e; }
 .notes-input:not(:placeholder-shown) { color: #e0ddd6; }
 
-/* ── HOME NOTE (Dead Bug) ── */
+/* ── HOME NOTE (McGill Big 3) ── */
 .home-note {
   background: var(--card);
   border: 1px dashed var(--border);
@@ -575,6 +631,144 @@ header {
   line-height: 1.9;
 }
 .home-note strong { color: var(--green); display: block; font-size: 0.62rem; margin-bottom: 4px; }
+.home-note em { color: #8a8a80; font-style: normal; font-weight: 600; }
+
+/* ── HISTORY ── */
+.hist-item {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  margin-bottom: 8px;
+  overflow: hidden;
+}
+.hist-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 14px;
+  cursor: pointer;
+}
+.hist-date { font-weight: 600; font-size: 0.62rem; color: var(--text); }
+.hist-routine {
+  font-size: 0.52rem;
+  color: var(--acc);
+  border: 1px solid rgba(232,197,71,0.2);
+  padding: 1px 6px;
+  border-radius: 3px;
+  white-space: nowrap;
+}
+.hist-meta { margin-left: auto; font-size: 0.52rem; color: #888; white-space: nowrap; }
+.hist-del {
+  background: none;
+  border: none;
+  color: #553333;
+  font-size: 0.7rem;
+  cursor: pointer;
+  padding: 2px 4px;
+  font-family: 'IBM Plex Mono', monospace;
+}
+.hist-body { display: none; border-top: 1px solid var(--border); padding: 10px 14px; }
+.hist-item.open .hist-body { display: block; }
+.hist-line { display: flex; gap: 10px; font-size: 0.56rem; padding: 4px 0; color: #aaa; align-items: baseline; }
+.hist-line .hl-name { flex: 1; color: var(--text); }
+.hist-line .hl-w { color: var(--acc); font-weight: 600; white-space: nowrap; }
+.hist-line .hl-r { color: var(--purple); white-space: nowrap; }
+.hist-empty {
+  text-align: center;
+  color: var(--muted);
+  font-size: 0.6rem;
+  padding: 48px 0;
+  line-height: 2.2;
+}
+
+/* ── EDITOR ── */
+.ed-name-row { display: flex; gap: 8px; margin-bottom: 12px; }
+.ed-name-input {
+  flex: 1;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--acc);
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.4rem;
+  padding: 8px 12px;
+  letter-spacing: 0.04em;
+  outline: none;
+}
+.ed-name-input:focus { border-color: rgba(232,197,71,0.35); }
+.ed-ex {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  margin-bottom: 8px;
+  overflow: hidden;
+}
+.ed-ex-head { display: flex; align-items: center; gap: 6px; padding: 10px 12px; cursor: pointer; }
+.ed-ex-title { flex: 1; font-size: 0.62rem; color: var(--text); font-weight: 600; }
+.ed-ex-spec { font-size: 0.52rem; color: #888; white-space: nowrap; }
+.ed-btn {
+  background: var(--card2);
+  border: 1px solid var(--border);
+  color: var(--muted);
+  border-radius: 5px;
+  font-size: 0.6rem;
+  padding: 4px 7px;
+  cursor: pointer;
+  font-family: 'IBM Plex Mono', monospace;
+}
+.ed-ex-body { display: none; border-top: 1px solid var(--border); padding: 12px; }
+.ed-ex.open .ed-ex-body { display: block; }
+.ed-field { margin-bottom: 8px; }
+.ed-label {
+  font-size: 0.46rem;
+  color: #666;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-bottom: 3px;
+}
+.ed-input, .ed-select, .ed-ta {
+  width: 100%;
+  background: #0c0c0c;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: #ddd;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.6rem;
+  padding: 7px 9px;
+  outline: none;
+}
+.ed-input:focus, .ed-select:focus, .ed-ta:focus { border-color: rgba(232,197,71,0.3); }
+.ed-ta { resize: vertical; min-height: 44px; line-height: 1.7; }
+.ed-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
+.ed-add {
+  width: 100%;
+  background: transparent;
+  border: 1px dashed var(--border);
+  color: var(--muted);
+  padding: 12px;
+  border-radius: 10px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.6rem;
+  cursor: pointer;
+  letter-spacing: 0.06em;
+  margin-bottom: 12px;
+}
+.ed-add:active { border-color: var(--acc); color: var(--acc); }
+.ed-actions { display: flex; gap: 6px; flex-wrap: wrap; }
+.ed-action {
+  flex: 1;
+  background: var(--card);
+  border: 1px solid var(--border);
+  color: var(--muted);
+  padding: 10px;
+  border-radius: 8px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.55rem;
+  cursor: pointer;
+  letter-spacing: 0.05em;
+  white-space: nowrap;
+}
+.ed-action.danger { color: #a05050; border-color: #3a2323; }
 
 /* ── DONE SCREEN ── */
 .done-screen {
@@ -615,7 +809,7 @@ header {
 }
 .done-stat-label { font-size: 0.52rem; color: #999; }
 
-/* ── LOG BTN ── */
+/* ── LOG + UTILS ── */
 .log-btn-wrap { margin-top: 16px; }
 .log-btn {
   width: 100%;
@@ -632,6 +826,20 @@ header {
 }
 .log-btn:hover { border-color: var(--green); color: var(--green); }
 .log-btn:active { transform: scale(0.98); }
+.util-row { display: flex; gap: 6px; margin-top: 10px; }
+.util-btn {
+  flex: 1;
+  background: transparent;
+  border: 1px solid var(--border);
+  color: #555;
+  padding: 10px;
+  border-radius: 8px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.55rem;
+  cursor: pointer;
+  letter-spacing: 0.06em;
+}
+.util-btn:active { color: #999; }
 
 /* ── ANIMATIONS ── */
 @keyframes fadeUp {
@@ -659,177 +867,323 @@ header {
     <div class="h-streak" id="streak-display">0🔥</div>
     <div class="h-meta">
       <strong id="last-date">LAST: —</strong>
-      Mon · Wed · Fri<br>
+      A / B split · Mon · Wed · Fri<br>
       ~45 min · spine-safe
     </div>
   </div>
 </header>
 
-<!-- WARMUP -->
-<div class="warmup-card" id="warmup-card" onclick="toggleWarmup()">
-  <div class="warmup-icon">⚡</div>
-  <div class="warmup-text">
-    <div class="warmup-title">WARMUP FIRST — 5 MIN</div>
-    <div class="warmup-steps">
-      2 min bike or row &nbsp;·&nbsp; arm circles × 10<br>
-      bodyweight squats × 15 &nbsp;·&nbsp; cat-cow × 10 slow
-    </div>
-  </div>
-  <div class="warmup-tick" id="warmup-tick">→</div>
-</div>
+<!-- TABS -->
+<nav class="tabs">
+  <button class="tab active" id="tab-workout" onclick="switchTab('workout')">WORKOUT</button>
+  <button class="tab" id="tab-history" onclick="switchTab('history')">HISTORY</button>
+  <button class="tab" id="tab-edit" onclick="switchTab('edit')">EDIT</button>
+</nav>
 
-<!-- STICKY TIMER -->
-<div class="timer-sticky">
-  <div class="timer-card" id="timer-card">
-    <div>
-      <div class="timer-label">REST TIMER</div>
-      <div class="timer-val" id="t-val">90s</div>
-    </div>
-    <div class="timer-adjs">
-      <button class="t-adj" onclick="adjTimer(-15)">−15s</button>
-      <button class="t-adj" onclick="adjTimer(+15)">+15s</button>
-    </div>
-    <div class="timer-right">
-      <div class="t-phase" id="t-phase">
-        <strong>READY</strong>
-        tap a set dot<br>to auto-start
+<!-- ═══ WORKOUT VIEW ═══ -->
+<div class="view show" id="view-workout">
+
+  <div class="day-pills" id="day-pills"></div>
+
+  <!-- WARMUP -->
+  <div class="warmup-card" id="warmup-card" onclick="toggleWarmup()">
+    <div class="warmup-icon">⚡</div>
+    <div class="warmup-text">
+      <div class="warmup-title">WARMUP FIRST — 5 MIN</div>
+      <div class="warmup-steps">
+        2 min bike or row &nbsp;·&nbsp; arm circles × 10<br>
+        bodyweight squats × 15 &nbsp;·&nbsp; cat-cow × 10 slow
       </div>
-      <button class="t-btn" id="t-btn" onclick="toggleTimer()">START</button>
+    </div>
+    <div class="warmup-tick" id="warmup-tick">→</div>
+  </div>
+
+  <!-- STICKY TIMER -->
+  <div class="timer-sticky">
+    <div class="timer-card" id="timer-card">
+      <div>
+        <div class="timer-label">REST TIMER</div>
+        <div class="timer-val" id="t-val">90s</div>
+      </div>
+      <div class="timer-adjs">
+        <button class="t-adj" onclick="adjTimer(-15)">−15s</button>
+        <button class="t-adj" onclick="adjTimer(+15)">+15s</button>
+      </div>
+      <div class="timer-right">
+        <div class="t-phase" id="t-phase">
+          <strong>READY</strong>
+          tap a set dot<br>to auto-start
+        </div>
+        <button class="t-btn" id="t-btn" onclick="toggleTimer()">START</button>
+      </div>
     </div>
   </div>
+
+  <!-- PROGRESS -->
+  <div class="prog-wrap">
+    <div class="prog-track"><div class="prog-fill" id="prog-fill"></div></div>
+    <div class="prog-text" id="prog-text">0 / 6 main lifts</div>
+  </div>
+
+  <!-- WORKOUT -->
+  <div id="workout"></div>
+
+  <!-- HOME NOTE -->
+  <div class="home-note" id="home-note">
+    <strong>🏠 McGILL BIG 3 — DO AT HOME DAILY (~8 MIN)</strong>
+    <em>DEAD BUG</em> 3×8/side — back pressed into floor · lower opposite arm + leg slowly · exhale<br>
+    <em>SIDE PLANK</em> 3×10s/side — from knees first · build to 30s · body in a straight line<br>
+    <em>BIRD DOG</em> 3×8/side — all fours · opposite arm + leg · no hip twist · 2 sec hold ·
+    <span style="color:#1a3a28">✓ Researched gold standard for L4–L5 / L5–S1 · better daily than 3×/week</span>
+  </div>
+
+  <!-- DONE -->
+  <div class="done-screen" id="done-screen">
+    <div class="done-title">GET OUT<br>OF THERE.</div>
+    <div class="done-sub">main lifts complete · finishers optional · log it</div>
+    <div class="done-stats" id="done-stats"></div>
+  </div>
+
+  <!-- LOG -->
+  <div class="log-btn-wrap">
+    <button class="log-btn" onclick="logSession()">✓ &nbsp;LOG SESSION &amp; RESET</button>
+  </div>
+  <div class="util-row">
+    <button class="util-btn" onclick="exportData()">⬇ EXPORT BACKUP</button>
+    <button class="util-btn" onclick="document.getElementById('import-file').click()">⬆ IMPORT BACKUP</button>
+    <input type="file" id="import-file" accept=".json,application/json" style="display:none" onchange="importData(this)">
+  </div>
+
 </div>
 
-<!-- PROGRESS -->
-<div class="prog-wrap">
-  <div class="prog-track"><div class="prog-fill" id="prog-fill"></div></div>
-  <div class="prog-text" id="prog-text">0 / 6 exercises</div>
+<!-- ═══ HISTORY VIEW ═══ -->
+<div class="view" id="view-history">
+  <div id="history-list"></div>
 </div>
 
-<!-- WORKOUT -->
-<div id="workout"></div>
-
-<!-- HOME NOTE -->
-<div class="home-note" id="home-note" style="display:none">
-  <strong>🏠 DEAD BUG — DO AT HOME DAILY</strong>
-  Lie on back · arms to ceiling · knees bent 90° · press lower back INTO floor throughout ·
-  lower opposite arm + leg slowly · exhale · return · 3 sets × 8 each side ·
-  Takes 4 min · better done daily than 3× week at gym ·
-  <span style="color:#1a3a28">✓ McGill gold-standard for L4–L5 / L5–S1</span>
-</div>
-
-<!-- DONE -->
-<div class="done-screen" id="done-screen">
-  <div class="done-title">GET OUT<br>OF THERE.</div>
-  <div class="done-sub">session complete · same again next time</div>
-  <div class="done-stats" id="done-stats"></div>
-</div>
-
-<!-- LOG -->
-<div class="log-btn-wrap">
-  <button class="log-btn" onclick="logSession()">✓ &nbsp;LOG SESSION &amp; RESET</button>
+<!-- ═══ EDIT VIEW ═══ -->
+<div class="view" id="view-edit">
+  <div class="day-pills" id="ed-pills"></div>
+  <div class="ed-name-row">
+    <input class="ed-name-input" id="ed-name" maxlength="18" oninput="renameRoutine(this.value)">
+  </div>
+  <div id="ed-list"></div>
+  <button class="ed-add" onclick="addExercise()">+ ADD EXERCISE</button>
+  <div class="ed-actions">
+    <button class="ed-action" onclick="addRoutine()">+ NEW DAY</button>
+    <button class="ed-action" onclick="dupRoutine()">DUPLICATE DAY</button>
+    <button class="ed-action danger" onclick="delRoutine()">DELETE DAY</button>
+  </div>
 </div>
 
 <script>
-const ROUTINE = [
-  {
-    id: 'chest',
-    name: 'Chest Press Machine',
-    altName: 'Dumbbell Floor Press',
-    group: 'machine',
-    sets: 3, reps: '8–12',
-    cue: 'Back pinned to pad · elbows 45° · push to near-straight · squeeze 1 sec · 2 sec return',
-    altCue: 'Lie on floor · elbows 45° · eliminates excessive stretch · back stays flat',
-    disc: 'Spine-neutral · zero spinal compression'
-  },
-  {
-    id: 'legs',
-    name: 'Leg Press',
-    altName: 'Hack Squat Machine',
-    group: 'machine',
-    sets: 3, reps: '10–15',
-    cue: 'Feet shoulder-width mid-plate · lower until thighs parallel · STOP before lower back lifts',
-    altCue: 'Same depth rule · feet same position · back stays pinned',
-    disc: 'Back fully supported · replaces barbell squat · L4–L5 / L5–S1 safe'
-  },
-  {
-    id: 'curl',
-    name: 'Leg Curl Machine',
-    altName: 'Lying Leg Curl',
-    group: 'machine',
-    sets: 3, reps: '10–15',
-    cue: 'Hips pinned down throughout · curl to full contraction · 3 sec return · feel the hamstring',
-    altCue: 'Prone version · same rule · hips down · squeeze hard at top',
-    disc: 'Zero spinal load · trains hamstrings that leg press misses'
-  },
-  {
-    id: 'pull',
-    name: 'Lat Pulldown',
-    altName: 'Assisted Pull-Up',
-    group: 'machine',
-    sets: 3, reps: '8–12',
-    cue: 'Lean back 10° · pull bar to upper chest · lead with elbows · squeeze shoulder blades',
-    altCue: 'Set assistance weight for clean reps · no kipping · chest to bar',
-    disc: 'Vertical pull pattern decompresses spine'
-  },
-  {
-    id: 'row',
-    name: 'Seated Cable Row',
-    altName: 'Cable Face Pull',
-    group: 'machine',
-    sets: 3, reps: '10–12',
-    cue: 'Sit tall · slight natural curve · lead with elbow not hand · squeeze blades 1 sec at end',
-    altCue: 'Rope at head height · pull to face · elbows high + wide · external rotation · go light',
-    disc: 'Horizontal pull completes back training with lat pulldown · seated = spine safe'
-  },
-  {
-    id: 'press',
-    name: 'DB Shoulder Press',
-    altName: 'Cable Lateral Raise',
-    group: 'db',
-    sets: 3, reps: '10–12',
-    cue: 'Sit on bench · back upright · don\'t arch lower back · don\'t fully lock elbows at top',
-    altCue: 'Cable at lowest setting · lead with elbow · raise to shoulder height · 3 sec descent · very light',
-    disc: 'Seated removes lumbar load · spine safe · same bench whole time'
-  }
+/* ════════════════════════════════════════════
+   THE ONE · v2 — A/B split, saved workouts,
+   history, editor, backup. Spine-safe always.
+   ════════════════════════════════════════════ */
+
+const DEFAULT_ROUTINES = [
+{
+  id: 'A', name: 'DAY A', exercises: [
+    { id:'chest', name:'Chest Press Machine', altName:'Dumbbell Floor Press', group:'machine', sets:3, repMin:8, repMax:12,
+      cue:'Back pinned to pad · elbows 45° · push to near-straight · squeeze 1 sec · 2 sec return',
+      altCue:'Lie on floor · elbows 45° · eliminates excessive stretch · back stays flat',
+      disc:'Spine-neutral · zero spinal compression' },
+    { id:'legs', name:'Leg Press', altName:'Hack Squat Machine', group:'machine', sets:3, repMin:10, repMax:15,
+      cue:'Feet shoulder-width mid-plate · lower until thighs parallel · STOP before lower back lifts',
+      altCue:'Same depth rule · feet same position · back stays pinned',
+      disc:'Back fully supported · replaces barbell squat · L4–L5 / L5–S1 safe' },
+    { id:'curl', name:'Leg Curl Machine', altName:'Lying Leg Curl', group:'machine', sets:3, repMin:10, repMax:15,
+      cue:'Hips pinned down throughout · curl to full contraction · 3 sec return · feel the hamstring',
+      altCue:'Prone version · same rule · hips down · squeeze hard at top',
+      disc:'Zero spinal load · trains hamstrings that leg press misses' },
+    { id:'pull', name:'Lat Pulldown', altName:'Assisted Pull-Up', group:'machine', sets:3, repMin:8, repMax:12,
+      cue:'Lean back 10° · pull bar to upper chest · lead with elbows · squeeze shoulder blades',
+      altCue:'Set assistance weight for clean reps · no kipping · chest to bar',
+      disc:'Vertical pull pattern decompresses spine' },
+    { id:'row', name:'Seated Cable Row', altName:'Cable Face Pull', group:'machine', sets:3, repMin:10, repMax:12,
+      cue:'Sit tall · slight natural curve · lead with elbow not hand · squeeze blades 1 sec at end',
+      altCue:'Rope at head height · pull to face · elbows high + wide · external rotation · go light',
+      disc:'Horizontal pull completes back training · seated = spine safe' },
+    { id:'press', name:'DB Shoulder Press', altName:'Cable Lateral Raise', group:'db', sets:3, repMin:10, repMax:12,
+      cue:"Sit on bench · back upright · don't arch lower back · don't fully lock elbows at top",
+      altCue:'Cable at lowest setting · lead with elbow · raise to shoulder height · 3 sec descent · very light',
+      disc:'Seated removes lumbar load · same bench whole time' },
+    { id:'fa1', name:'Cable Curl', altName:'Seated DB Curl', group:'finisher', sets:2, repMin:12, repMax:15,
+      cue:'Stand tall, soft knees · elbows pinned to sides · squeeze 1 sec · 3 sec descent · no swinging',
+      altCue:'Back against bench pad · full range · no momentum',
+      disc:'Light + upright · zero meaningful spinal stress' },
+    { id:'fa2', name:'Rope Pushdown', altName:'Triceps Dip Machine', group:'finisher', sets:2, repMin:12, repMax:15,
+      cue:'Elbows pinned to sides · push to full extension · squeeze triceps · control the return',
+      altCue:'Back on the pad · stop short of any shoulder strain',
+      disc:'Zero spinal load · direct triceps work' },
+    { id:'fa3', name:'Seated Calf Raise', altName:'Calf Press on Leg Press', group:'finisher', sets:2, repMin:15, repMax:20,
+      cue:'Full stretch at the bottom · 2 sec pause at the top · slow lower',
+      altCue:'Toes on bottom edge of the plate · knees soft, never locked',
+      disc:'Seated = zero spinal compression' }
+  ]
+},
+{
+  id: 'B', name: 'DAY B', exercises: [
+    { id:'bchest', name:'Incline Chest Press Machine', altName:'Pec Deck Fly', group:'machine', sets:3, repMin:8, repMax:12,
+      cue:'Back + head pinned to pad · press up and slightly back · squeeze 1 sec · 2 sec return',
+      altCue:'Elbows slightly bent · squeeze chest 1 sec · slow open · never overstretch',
+      disc:'Upper-chest angle Day A misses · seat supported · zero lumbar load' },
+    { id:'blegs', name:'Hack Squat Machine', altName:'Leg Extension', group:'machine', sets:3, repMin:10, repMax:15,
+      cue:'Back + head glued to pad · feet slightly high on plate · thighs to parallel · drive through mid-foot',
+      altCue:'3 sec lowering · 1 sec pause at the top · no jerking the stack',
+      disc:'Quad focus from a new angle · back fully supported' },
+    { id:'bcurl', name:'Seated Leg Curl', altName:'Lying Leg Curl', group:'machine', sets:3, repMin:10, repMax:15,
+      cue:'Thigh pad locked down · curl to full contraction · 3 sec return',
+      altCue:'Hips pinned down · squeeze hard at the bottom of the curl',
+      disc:'Seated works hamstrings at longer length than lying · zero spinal load' },
+    { id:'brow', name:'Chest-Supported Row', altName:'Machine Row', group:'machine', sets:3, repMin:8, repMax:12,
+      cue:'Chest glued to the pad the whole set · lead with elbows · squeeze blades 1 sec',
+      altCue:'Chest on pad · same rules · slow release',
+      disc:'Chest pad removes ALL lumbar load · safest row for L4–L5 / L5–S1' },
+    { id:'bpull', name:'Neutral-Grip Pulldown', altName:'Assisted Pull-Up', group:'machine', sets:3, repMin:8, repMax:12,
+      cue:'Palms facing each other · lean back 10° · pull to upper chest · slow release',
+      altCue:'Neutral handles if available · clean reps · no kipping',
+      disc:'Neutral grip = shoulder-friendly · decompresses spine' },
+    { id:'bpress', name:'Machine Shoulder Press', altName:'Cable Lateral Raise', group:'machine', sets:3, repMin:10, repMax:12,
+      cue:"Back pinned to pad · press to near-lockout · don't shrug the weight up",
+      altCue:'Lead with elbow · raise to shoulder height · 3 sec descent · very light',
+      disc:'Machine + back pad = safest overhead press variation' },
+    { id:'fb1', name:'Rear-Delt Machine Fly', altName:'Cable Face Pull', group:'finisher', sets:2, repMin:12, repMax:15,
+      cue:'Chest on pad · arms long · lead with elbows · squeeze rear delts 1 sec',
+      altCue:'Rope at head height · elbows high + wide · go light',
+      disc:'Balances all the pressing · posture insurance' },
+    { id:'fb2', name:'Seated DB Curl', altName:'Cable Curl', group:'finisher', sets:2, repMin:12, repMax:15,
+      cue:'Back against bench pad · full range · zero swinging',
+      altCue:'Stand tall, soft knees · elbows pinned to sides',
+      disc:'Seated + light = zero spinal issue' },
+    { id:'fb3', name:'Seated Calf Raise', altName:'Calf Press on Leg Press', group:'finisher', sets:2, repMin:15, repMax:20,
+      cue:'Full stretch at the bottom · 2 sec pause at the top',
+      altCue:'Toes on bottom edge of the plate · knees soft',
+      disc:'Seated = zero spinal compression' }
+  ]
+}
 ];
 
-// ── STORAGE KEYS ──
+/* ── STORAGE ── */
 const S = {
-  checks:     'g1_checks',
-  weights:    'g1_weights',
-  alts:       'g1_alts',
-  history:    'g1_history',
-  warmup:     'g1_warmup',
-  streak:     'g1_streak',
-  lastDate:   'g1_lastdate',
-  repCounts:  'g1_repcounts',
-  notes:      'g1_notes',
-  repHistory: 'g1_rephist'
+  routines: 'g2_routines',
+  active:   'g2_active',
+  checks:   'g2_checks',
+  reps:     'g2_reps',
+  weights:  'g2_weights',
+  alts:     'g2_alts',
+  notes:    'g2_notes',
+  sessions: 'g2_sessions',
+  warmup:   'g2_warmup',
+  streak:   'g2_streak',
+  lastDate: 'g2_lastdate',
+  ver:      'g2_ver'
 };
 
-let checks     = load(S.checks,     {});
-let weights    = load(S.weights,    {});
-let alts       = load(S.alts,       {});
-let history    = load(S.history,    {});
-let repCounts  = load(S.repCounts,  {});
-let notes      = load(S.notes,      {});
-let repHistory = load(S.repHistory, {});
-let streak     = parseInt(localStorage.getItem(S.streak) || '0');
-let warmup     = localStorage.getItem(S.warmup) === '1';
-
 function load(key, def) {
-  try { return JSON.parse(localStorage.getItem(key)) || def; } catch { return def; }
+  try { const v = JSON.parse(localStorage.getItem(key)); return (v === null || v === undefined) ? def : v; }
+  catch (e) { return def; }
 }
 function save(key, val) {
-  try { localStorage.setItem(key, JSON.stringify(val)); } catch {}
+  try { localStorage.setItem(key, JSON.stringify(val)); } catch (e) {}
+}
+function esc(s) {
+  return String(s === null || s === undefined ? '' : s)
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;').replace(/'/g,'&#39;');
 }
 
-// ── TIMER ──
-let timerBase      = 90;
-let timerLeft      = 90;
-let timerRunning   = false;
-let timerTick      = null;
-let currentExLabel = '';
+/* ── MIGRATION from v1 (g1_*) — old data carries over ── */
+function migrate() {
+  if (localStorage.getItem(S.ver)) return;
+  try {
+    const g = (k, d) => { try { return JSON.parse(localStorage.getItem(k)) || d; } catch (e) { return d; } };
+    const hasOld = localStorage.getItem('g1_weights') || localStorage.getItem('g1_history') || localStorage.getItem('g1_streak');
+    if (hasOld) {
+      const oldW = g('g1_weights', {}), oldA = g('g1_alts', {}), oldN = g('g1_notes', {});
+      const oldH = g('g1_history', {}), oldR = g('g1_rephist', {});
+      const w = {}, a = {}, n = {};
+      Object.entries(oldW).forEach(([k, v]) => {
+        const i = k.lastIndexOf('_');
+        if (i > 0) w['A|' + k.slice(0, i) + '|' + k.slice(i + 1)] = v;
+      });
+      Object.entries(oldA).forEach(([k, v]) => { if (v) a['A|' + k] = true; });
+      Object.entries(oldN).forEach(([k, v]) => { if (v) n['A|' + k] = v; });
+      localStorage.setItem(S.weights, JSON.stringify(w));
+      localStorage.setItem(S.alts, JSON.stringify(a));
+      localStorage.setItem(S.notes, JSON.stringify(n));
+      const st = localStorage.getItem('g1_streak'); if (st) localStorage.setItem(S.streak, st);
+      const ld = localStorage.getItem('g1_lastdate'); if (ld) localStorage.setItem(S.lastDate, ld);
+      // Rebuild the last logged v1 session so LAST / prev ghosts survive
+      const dayA = DEFAULT_ROUTINES[0];
+      const entries = []; let tR = 0, tS = 0;
+      dayA.exercises.forEach(ex => {
+        if (ex.group === 'finisher') return;
+        const alt = !!oldA[ex.id];
+        const wgt = oldH[ex.id + '_' + (alt ? 'b' : 'a')] || '';
+        const rh = oldR[ex.id] || {};
+        const reps = [1, 2, 3].map(s => rh[ex.id + '-' + s] || 0);
+        const sd = reps.filter(v => v > 0).length;
+        tR += reps.reduce((x, y) => x + y, 0); tS += sd;
+        if (wgt || reps.some(v => v > 0)) entries.push({ id: ex.id, name: alt ? ex.altName : ex.name, weight: wgt, reps: reps, setsDone: sd });
+      });
+      if (entries.length) {
+        localStorage.setItem(S.sessions, JSON.stringify([{
+          iso: new Date(0).toISOString(), date: (ld || 'imported'), routineId: 'A', routineName: 'DAY A',
+          exercises: entries, totalSets: tS, totalReps: tR, imported: true
+        }]));
+      }
+    }
+  } catch (e) {}
+  localStorage.setItem(S.ver, '2');
+}
+migrate();
+
+/* ── STATE ── */
+let routines  = load(S.routines, null) || JSON.parse(JSON.stringify(DEFAULT_ROUTINES));
+let checks    = load(S.checks, {});
+let repCounts = load(S.reps, {});
+let weights   = load(S.weights, {});
+let alts      = load(S.alts, {});
+let notes     = load(S.notes, {});
+let sessions  = load(S.sessions, []);
+let streak    = parseInt(localStorage.getItem(S.streak) || '0');
+let warmup    = localStorage.getItem(S.warmup) === '1';
+let curView   = 'workout';
+let edOpen    = {};
+let activeId  = localStorage.getItem(S.active);
+
+/* ── KEY HELPERS ── */
+const ck = (rid, exId, s) => rid + '|' + exId + '|' + s;
+const ak = (rid, exId) => rid + '|' + exId;
+function wkOf(rid, ex) { return rid + '|' + ex.id + '|' + (alts[ak(rid, ex.id)] ? 'b' : 'a'); }
+function setsOf(ex) { return Array.from({ length: ex.sets || 3 }, (_, i) => i + 1); }
+function getRoutine(id) { return routines.find(r => r.id === id); }
+function findEx(rid, exId) { const r = getRoutine(rid); return r ? r.exercises.find(e => e.id === exId) : null; }
+function saveRoutines() { save(S.routines, routines); }
+
+function nextRoutineId() {
+  if (!routines.length) return null;
+  if (!sessions.length) return routines[0].id;
+  const last = sessions[sessions.length - 1];
+  const i = routines.findIndex(r => r.id === last.routineId);
+  if (i < 0) return routines[0].id;
+  return routines[(i + 1) % routines.length].id;
+}
+
+function lastFor(rid, exId) {
+  for (let i = sessions.length - 1; i >= 0; i--) {
+    const s = sessions[i];
+    if (s.routineId !== rid) continue;
+    const e = (s.exercises || []).find(x => x.id === exId);
+    if (e && (e.weight || (e.reps || []).some(v => v > 0))) return e;
+  }
+  return null;
+}
+
+/* ── TIMER ── */
+let timerBase = 90, timerLeft = 90, timerRunning = false, timerTick = null, currentExLabel = '';
 
 function adjTimer(d) {
   timerBase = Math.max(15, Math.min(300, timerBase + d));
@@ -848,7 +1202,7 @@ function startTimer(seconds) {
   document.getElementById('timer-card').classList.add('running');
   document.getElementById('timer-card').classList.remove('ready');
   document.getElementById('t-btn').textContent = 'RESET';
-  setPhase(`<strong>${currentExLabel || 'RESTING'}</strong>rest in progress`);
+  setPhase('<strong>' + esc(currentExLabel || 'RESTING') + '</strong>rest in progress');
   timerTick = setInterval(() => {
     timerLeft--;
     refreshTimerDisplay();
@@ -859,13 +1213,13 @@ function startTimer(seconds) {
       document.getElementById('timer-card').classList.remove('running');
       document.getElementById('timer-card').classList.add('ready');
       document.getElementById('t-btn').textContent = 'START';
-      setPhase(`<strong>REST DONE</strong>next set ready`);
+      setPhase('<strong>REST DONE</strong>next set ready');
       if (navigator.vibrate) navigator.vibrate([100, 60, 200]);
       setTimeout(() => {
         document.getElementById('timer-card').classList.remove('ready');
         timerLeft = timerBase;
         refreshTimerDisplay();
-        setPhase(`<strong>READY</strong>tap set to start`);
+        setPhase('<strong>READY</strong>tap set to start');
       }, 3000);
     }
   }, 1000);
@@ -876,7 +1230,7 @@ function resetTimer(restoreDisplay = true) {
   timerLeft = timerBase;
   document.getElementById('timer-card').classList.remove('running', 'ready');
   document.getElementById('t-btn').textContent = 'START';
-  if (restoreDisplay) { refreshTimerDisplay(); setPhase(`<strong>READY</strong>tap set to start`); }
+  if (restoreDisplay) { refreshTimerDisplay(); setPhase('<strong>READY</strong>tap set to start'); }
 }
 function refreshTimerDisplay() {
   const el = document.getElementById('t-val');
@@ -884,294 +1238,7 @@ function refreshTimerDisplay() {
 }
 function setPhase(html) { document.getElementById('t-phase').innerHTML = html; }
 
-// ── RENDER ──
-function render() {
-  const wrap = document.getElementById('workout');
-  wrap.innerHTML = '';
-  let shownDB = false;
-
-  ROUTINE.forEach((ex) => {
-    const isAlt  = !!alts[ex.id];
-    const wKey   = `${ex.id}_${isAlt ? 'b' : 'a'}`;
-    const curW   = weights[wKey] || '';
-    const lastW  = history[wKey] || null;
-    const exChecks = [1,2,3].map(s => !!checks[`${ex.id}-${s}`]);
-    const allDone  = exChecks.every(Boolean);
-
-    if (ex.group === 'db' && !shownDB) {
-      wrap.appendChild(divider('DUMBBELL — grab a bench · own it'));
-      shownDB = true;
-    }
-
-    // ── Last session row (weight + reps) ──
-    const lastRepData = repHistory[ex.id] || null;
-    let lastRepStr = '';
-    if (lastRepData) {
-      lastRepStr = [1,2,3].map(s => {
-        const v = lastRepData[`${ex.id}-${s}`];
-        return (v && v > 0) ? v : '?';
-      }).join(' / ');
-    }
-
-    let lastHTML = '';
-    if (lastW || lastRepStr) {
-      const cur  = parseFloat(curW);
-      const prev = parseFloat(lastW);
-      const isPB = curW && lastW && cur > prev;
-      lastHTML = `
-        <div class="last-session-row">
-          ${lastW ? `<span>LAST: <span class="last-val">${lastW}kg</span></span>` : ''}
-          ${lastRepStr ? `<span style="color:#333">·</span><span>REPS: <span class="last-reps-val">${lastRepStr}</span></span>` : ''}
-          ${isPB ? '<span class="last-arrow-up">↑ PB</span><span class="pb-badge">NEW PB</span>' : ''}
-        </div>`;
-    } else {
-      lastHTML = `<div class="last-session-row"><span style="color:#2a2a2a">no history yet</span></div>`;
-    }
-
-    const tagClass = { machine: 'tag-machine', db: 'tag-db', core: 'tag-core' }[ex.group] || 'tag-machine';
-    const tagLabel = { machine: 'Machine', db: 'Dumbbell', core: 'Core' }[ex.group] || 'Machine';
-    const nudgeWeight = curW ? (parseFloat(curW) + 2.5).toFixed(1) : null;
-
-    // Rep summary pills
-    const setRepPills = [1,2,3].map(s => {
-      const rc    = repCounts[`${ex.id}-${s}`] || 0;
-      const isHit = !!checks[`${ex.id}-${s}`];
-      return `<span class="rep-pill ${isHit ? 'active' : ''}">${rc > 0 ? rc : '—'}</span>`;
-    }).join('');
-    const totalReps = [1,2,3].reduce((sum, s) => sum + (repCounts[`${ex.id}-${s}`] || 0), 0);
-
-    // Set dots — last session rep ghost shown inside each dot
-    const setDotsHTML = [1,2,3].map(s => {
-      const isHit  = !!checks[`${ex.id}-${s}`];
-      const rc     = repCounts[`${ex.id}-${s}`] || '';
-      const lastRc = lastRepData ? (lastRepData[`${ex.id}-${s}`] || 0) : 0;
-      const lastGhost = lastRc > 0 ? `<span class="rep-last">prev:${lastRc}</span>` : '';
-      return `
-        <div class="set-dot ${isHit ? 'hit' : ''}"
-             id="dot-${ex.id}-${s}"
-             onclick="handleDotClick('${ex.id}', ${s}, this, '${(isAlt ? ex.altName : ex.name).replace(/'/g,"\\'")}')">
-          <span class="set-num">S${s}</span>
-          <input class="rep-input" type="number" inputmode="numeric"
-            placeholder="–"
-            value="${rc}"
-            onclick="event.stopPropagation()"
-            oninput="saveRep('${ex.id}', ${s}, this.value, this)">
-          <span class="rep-label">reps</span>
-          ${lastGhost}
-        </div>
-      `;
-    }).join('');
-
-    const noteVal = notes[ex.id] || '';
-
-    const card = document.createElement('div');
-    card.className = `ex-card ${isAlt ? 'swapped' : ''} ${allDone ? 'done-card' : ''}`;
-    card.dataset.id    = ex.id;
-    card.dataset.group = ex.group;
-
-    card.innerHTML = `
-      <div class="ex-head">
-        <div class="ex-head-row">
-          <div class="ex-name-wrap">
-            <div class="ex-name">${isAlt ? ex.altName : ex.name}</div>
-            <div class="ex-alt-name">ALT: ${isAlt ? ex.name : ex.altName}</div>
-          </div>
-          <button class="alt-btn" onclick="swapAlt('${ex.id}')">ALT ⇄</button>
-        </div>
-        <div class="ex-tags">
-          <span class="tag ${tagClass}">${tagLabel}</span>
-          <span class="tag tag-reps">3 × ${ex.reps}</span>
-        </div>
-        ${lastHTML}
-      </div>
-
-      <div class="ex-body">
-        <div class="sets-row">
-          <div class="set-dots">${setDotsHTML}</div>
-          <div class="weight-box">
-            <input class="weight-input" type="number" inputmode="decimal"
-              placeholder="—" value="${curW}"
-              oninput="saveWeight('${ex.id}', '${isAlt ? 'b' : 'a'}', this.value)"
-              onclick="event.stopPropagation()">
-            <div class="weight-unit">KG</div>
-          </div>
-        </div>
-
-        <div class="rep-summary">
-          <span class="rep-summary-label">REPS</span>
-          <div class="rep-summary-pills">${setRepPills}</div>
-          <div class="rep-total">total <span>${totalReps > 0 ? totalReps : '—'}</span></div>
-        </div>
-
-        <div class="nudge ${allDone && nudgeWeight ? 'show' : ''}" id="nudge-${ex.id}">
-          ↑ All sets complete — next session try <strong>${nudgeWeight || '?'}kg</strong>
-        </div>
-
-        <div class="form-cue">
-          ${isAlt ? ex.altCue : ex.cue}
-          <div class="disc-note">✓ ${ex.disc}</div>
-        </div>
-
-        <div class="notes-section">
-          <div class="notes-label">Notes</div>
-          <textarea class="notes-input"
-            placeholder="how it felt, adjustments, next time..."
-            oninput="saveNote('${ex.id}', this.value); autoResize(this)"
-            onfocus="autoResize(this)">${noteVal}</textarea>
-        </div>
-      </div>
-    `;
-
-    wrap.appendChild(card);
-  });
-
-  document.getElementById('home-note').style.display = 'block';
-  updateProgress();
-  updateWarmupUI();
-  updateHeader();
-}
-
-function divider(label) {
-  const d = document.createElement('div');
-  d.className = 'sec-div';
-  d.innerHTML = `<div class="sec-line"></div><div class="sec-label">${label}</div><div class="sec-line"></div>`;
-  return d;
-}
-
-// ── DOT CLICK (manual tap to mark done) ──
-function handleDotClick(id, s, el, exName) {
-  const key    = `${id}-${s}`;
-  const wasHit = !!checks[key];
-  checks[key]  = !wasHit;
-  save(S.checks, checks);
-
-  el.classList.toggle('hit', !wasHit);
-  el.classList.add('pop');
-  setTimeout(() => el.classList.remove('pop'), 200);
-
-  if (!wasHit) autoStartTimer(exName);
-
-  const allDone = [1,2,3].every(n => !!checks[`${id}-${n}`]);
-  const card    = el.closest('.ex-card');
-  card.classList.toggle('done-card', allDone);
-
-  const isAlt = !!alts[id];
-  const wKey  = `${id}_${isAlt ? 'b' : 'a'}`;
-  const curW  = weights[wKey] || '';
-  const nudge = document.getElementById(`nudge-${id}`);
-  if (nudge && allDone && curW) {
-    nudge.innerHTML = `↑ All sets complete — next session try <strong>${(parseFloat(curW)+2.5).toFixed(1)}kg</strong>`;
-    nudge.classList.add('show');
-  } else if (nudge && !allDone) {
-    nudge.classList.remove('show');
-  }
-
-  updateProgress();
-  updateRepSummary(id);
-}
-
-// ── SAVE REP — auto-marks set done when reps entered ──
-function saveRep(id, s, val, inputEl) {
-  const key = `${id}-${s}`;
-  const num = val === '' ? 0 : parseInt(val) || 0;
-  repCounts[key] = num;
-  save(S.repCounts, repCounts);
-
-  // Auto-mark set as hit when a rep count is typed
-  if (num > 0 && !checks[key]) {
-    checks[key] = true;
-    save(S.checks, checks);
-
-    const dot = document.getElementById(`dot-${id}-${s}`);
-    if (dot) {
-      dot.classList.add('hit', 'pop');
-      setTimeout(() => dot.classList.remove('pop'), 200);
-
-      const exName = dot.closest('.ex-card').querySelector('.ex-name').textContent;
-      autoStartTimer(exName);
-    }
-
-    const allDone = [1,2,3].every(n => !!checks[`${id}-${n}`]);
-    const card    = inputEl ? inputEl.closest('.ex-card') : null;
-    if (card) card.classList.toggle('done-card', allDone);
-
-    const isAlt = !!alts[id];
-    const wKey  = `${id}_${isAlt ? 'b' : 'a'}`;
-    const curW  = weights[wKey] || '';
-    const nudge = document.getElementById(`nudge-${id}`);
-    if (nudge && allDone && curW) {
-      nudge.innerHTML = `↑ All sets complete — next session try <strong>${(parseFloat(curW)+2.5).toFixed(1)}kg</strong>`;
-      nudge.classList.add('show');
-    }
-
-    updateProgress();
-  }
-
-  // If cleared back to 0, unmark the dot
-  if (num === 0 && checks[key]) {
-    checks[key] = false;
-    save(S.checks, checks);
-    const dot = document.getElementById(`dot-${id}-${s}`);
-    if (dot) dot.classList.remove('hit');
-    const card = inputEl ? inputEl.closest('.ex-card') : null;
-    if (card) card.classList.remove('done-card');
-    const nudge = document.getElementById(`nudge-${id}`);
-    if (nudge) nudge.classList.remove('show');
-    updateProgress();
-  }
-
-  updateRepSummary(id);
-}
-
-function updateRepSummary(id) {
-  const card = document.querySelector(`[data-id="${id}"]`);
-  if (!card) return;
-  const pills   = card.querySelector('.rep-summary-pills');
-  const totalEl = card.querySelector('.rep-total span');
-  if (!pills || !totalEl) return;
-  const newPills = [1,2,3].map(s => {
-    const rc    = repCounts[`${id}-${s}`] || 0;
-    const isHit = !!checks[`${id}-${s}`];
-    return `<span class="rep-pill ${isHit ? 'active' : ''}">${rc > 0 ? rc : '—'}</span>`;
-  }).join('');
-  pills.innerHTML = newPills;
-  const total = [1,2,3].reduce((sum, s) => sum + (repCounts[`${id}-${s}`] || 0), 0);
-  totalEl.textContent = total > 0 ? total : '—';
-}
-
-function swapAlt(id) {
-  alts[id] = !alts[id];
-  save(S.alts, alts);
-  render();
-}
-
-function saveWeight(id, mode, val) {
-  const key = `${id}_${mode}`;
-  weights[key] = val;
-  save(S.weights, weights);
-  const allDone = [1,2,3].every(n => !!checks[`${id}-${n}`]);
-  const nudge   = document.getElementById(`nudge-${id}`);
-  if (nudge && allDone && val) {
-    nudge.innerHTML = `↑ All sets complete — next session try <strong>${(parseFloat(val)+2.5).toFixed(1)}kg</strong>`;
-    nudge.classList.add('show');
-  }
-  const lastW = history[key];
-  if (lastW && parseFloat(val) > parseFloat(lastW)) {
-    render();
-  }
-}
-
-function saveNote(id, val) {
-  notes[id] = val;
-  save(S.notes, notes);
-}
-
-function autoResize(el) {
-  el.style.height = 'auto';
-  el.style.height = Math.max(48, el.scrollHeight) + 'px';
-}
-
-// ── WARMUP ──
+/* ── WARMUP ── */
 function toggleWarmup() {
   warmup = !warmup;
   localStorage.setItem(S.warmup, warmup ? '1' : '0');
@@ -1184,98 +1251,521 @@ function updateWarmupUI() {
   tick.textContent = warmup ? '✓' : '→';
 }
 
-// ── PROGRESS ──
-function updateProgress() {
-  const total = ROUTINE.length;
-  const done  = ROUTINE.filter(ex => [1,2,3].every(s => !!checks[`${ex.id}-${s}`])).length;
-  document.getElementById('prog-fill').style.width = (done / total * 100) + '%';
-  document.getElementById('prog-text').textContent = `${done} / ${total} exercises`;
-
-  const isDone = done === total;
-  const screen = document.getElementById('done-screen');
-  screen.classList.toggle('show', isDone);
-
-  if (isDone) {
-    const totalReps = Object.values(repCounts).reduce((a, b) => a + (b || 0), 0);
-    document.getElementById('done-stats').innerHTML = `
-      <div class="done-stat">
-        <div class="done-stat-val">${total * 3}</div>
-        <div class="done-stat-label">total sets</div>
-      </div>
-      <div class="done-stat">
-        <div class="done-stat-val">${totalReps || '—'}</div>
-        <div class="done-stat-label">total reps</div>
-      </div>
-      <div class="done-stat">
-        <div class="done-stat-val">${streak + 1}</div>
-        <div class="done-stat-label">sessions total</div>
-      </div>
-      <div class="done-stat">
-        <div class="done-stat-val">⚡</div>
-        <div class="done-stat-label">done</div>
-      </div>
-    `;
-    screen.scrollIntoView({ behavior: 'smooth', block: 'center' });
-  }
-}
-
-// ── HEADER ──
+/* ── HEADER ── */
 function updateHeader() {
   const last = localStorage.getItem(S.lastDate);
-  document.getElementById('last-date').textContent = last ? `LAST: ${last}` : 'LAST: —';
+  document.getElementById('last-date').textContent = last ? 'LAST: ' + last : 'LAST: —';
   document.getElementById('streak-display').textContent = streak + '🔥';
 }
 
-// ── LOG SESSION ──
-function logSession() {
-  const done = ROUTINE.filter(ex => [1,2,3].every(s => !!checks[`${ex.id}-${s}`])).length;
-  const msg  = done < ROUTINE.length
-    ? `Only ${done}/${ROUTINE.length} exercises done. Log anyway and reset?`
-    : 'Log this session and reset for next time?';
-  if (!confirm(msg)) return;
+/* ── PILLS ── */
+function renderPills(elId) {
+  const el = document.getElementById(elId);
+  if (!el) return;
+  const nid = nextRoutineId();
+  el.innerHTML = routines.map(r =>
+    `<button class="day-pill ${r.id === activeId ? 'active' : ''}" onclick="setDay('${r.id}')">${esc(r.name)}${(r.id === nid && routines.length > 1) ? '<span class="next-chip">NEXT</span>' : ''}</button>`
+  ).join('');
+}
+function setDay(id) {
+  activeId = id;
+  localStorage.setItem(S.active, id);
+  if (curView === 'edit') renderEditor(); else render();
+}
 
-  // Save weight history
-  history = { ...weights };
-  save(S.history, history);
+/* ── WORKOUT RENDER ── */
+function divider(label) {
+  const d = document.createElement('div');
+  d.className = 'sec-div';
+  d.innerHTML = `<div class="sec-line"></div><div class="sec-label">${label}</div><div class="sec-line"></div>`;
+  return d;
+}
 
-  // Save rep history — keyed by exercise id, then set number
-  repHistory = {};
-  ROUTINE.forEach(ex => {
-    const data = {};
-    [1,2,3].forEach(s => {
-      data[`${ex.id}-${s}`] = repCounts[`${ex.id}-${s}`] || 0;
-    });
-    repHistory[ex.id] = data;
+function render() {
+  renderPills('day-pills');
+  if (!getRoutine(activeId)) { activeId = routines[0].id; localStorage.setItem(S.active, activeId); }
+  const rid = activeId;
+  const r = getRoutine(rid);
+  const wrap = document.getElementById('workout');
+  wrap.innerHTML = '';
+  let shownDB = false, shownFin = false;
+  r.exercises.forEach(ex => {
+    if (ex.group === 'db' && !shownDB) { wrap.appendChild(divider('DUMBBELL — grab a bench · own it')); shownDB = true; }
+    if (ex.group === 'finisher' && !shownFin) { wrap.appendChild(divider('OPTIONAL FINISHER — zero spinal load · skip if short on time')); shownFin = true; }
+    wrap.appendChild(buildCard(rid, ex));
   });
-  save(S.repHistory, repHistory);
+  updateProgress();
+  updateWarmupUI();
+  updateHeader();
+  document.querySelectorAll('#workout .notes-input').forEach(el => { if (el.value) autoResize(el); });
+}
 
-  // Update streak + date
+function buildCard(rid, ex) {
+  const isAlt = !!alts[ak(rid, ex.id)];
+  const curW = weights[wkOf(rid, ex)] || '';
+  const last = lastFor(rid, ex.id);
+  const lastW = last && last.weight ? last.weight : '';
+  const lastReps = last && last.reps ? last.reps : null;
+  const nums = setsOf(ex);
+
+  const lastRepStr = (lastReps && lastReps.some(v => v > 0))
+    ? nums.map(s => (lastReps[s - 1] && lastReps[s - 1] > 0) ? lastReps[s - 1] : '?').join(' / ')
+    : '';
+  let lastHTML;
+  if (lastW || lastRepStr) {
+    const isPB = curW && lastW && parseFloat(curW) > parseFloat(lastW);
+    lastHTML = '<div class="last-session-row">'
+      + (lastW ? `<span>LAST: <span class="last-val">${esc(lastW)}kg</span></span>` : '')
+      + (lastW && lastRepStr ? '<span style="color:#333">·</span>' : '')
+      + (lastRepStr ? `<span>REPS: <span class="last-reps-val">${lastRepStr}</span></span>` : '')
+      + (isPB ? '<span class="last-arrow-up">↑</span><span class="pb-badge">NEW PB</span>' : '')
+      + '</div>';
+  } else {
+    lastHTML = '<div class="last-session-row"><span style="color:#2a2a2a">no history yet — set your baseline</span></div>';
+  }
+
+  const tagClass = { machine:'tag-machine', db:'tag-db', core:'tag-core', finisher:'tag-finisher' }[ex.group] || 'tag-machine';
+  const tagLabel = { machine:'Machine', db:'Dumbbell', core:'Core', finisher:'Optional' }[ex.group] || 'Machine';
+
+  const dots = nums.map(s => {
+    const key = ck(rid, ex.id, s);
+    const isHit = !!checks[key];
+    const rc = repCounts[key] || '';
+    const lastRc = lastReps ? (lastReps[s - 1] || 0) : 0;
+    const ghost = lastRc > 0 ? `<span class="rep-last">prev:${lastRc}</span>` : '';
+    return `<div class="set-dot ${isHit ? 'hit' : ''}" id="dot-${rid}-${ex.id}-${s}" onclick="handleDotClick('${rid}','${ex.id}',${s},this)"><span class="set-num">S${s}</span><input class="rep-input" type="number" inputmode="numeric" placeholder="–" value="${rc}" onclick="event.stopPropagation()" oninput="saveRep('${rid}','${ex.id}',${s},this.value)"><span class="rep-label">reps</span>${ghost}</div>`;
+  }).join('');
+
+  const pills = nums.map(s => {
+    const rc = repCounts[ck(rid, ex.id, s)] || 0;
+    const h = !!checks[ck(rid, ex.id, s)];
+    return `<span class="rep-pill ${h ? 'active' : ''}">${rc > 0 ? rc : '—'}</span>`;
+  }).join('');
+  const totalReps = nums.reduce((sum, s) => sum + (repCounts[ck(rid, ex.id, s)] || 0), 0);
+  const allDone = nums.every(s => !!checks[ck(rid, ex.id, s)]);
+  const nudgeHTML = computeNudge(rid, ex);
+  const noteVal = notes[ak(rid, ex.id)] || '';
+
+  const card = document.createElement('div');
+  card.className = `ex-card ${isAlt ? 'swapped' : ''} ${allDone ? 'done-card' : ''}`;
+  card.dataset.id = ex.id;
+  card.dataset.group = ex.group;
+  card.innerHTML = `
+    <div class="ex-head">
+      <div class="ex-head-row">
+        <div class="ex-name-wrap">
+          <div class="ex-name">${esc(isAlt ? ex.altName : ex.name)}</div>
+          <div class="ex-alt-name">ALT MODE · main: ${esc(ex.name)}</div>
+        </div>
+        ${ex.altName ? `<button class="alt-btn" onclick="swapAlt('${rid}','${ex.id}')">ALT ⇄</button>` : ''}
+      </div>
+      <div class="ex-tags">
+        <span class="tag ${tagClass}">${tagLabel}</span>
+        <span class="tag tag-reps">${ex.sets} × ${ex.repMin}–${ex.repMax}</span>
+      </div>
+      ${lastHTML}
+    </div>
+    <div class="ex-body">
+      <div class="sets-row">
+        <div class="set-dots">${dots}</div>
+        <div class="weight-box">
+          <input class="weight-input" type="number" inputmode="decimal" placeholder="—" value="${esc(curW)}" oninput="saveWeight('${rid}','${ex.id}',this.value)" onclick="event.stopPropagation()">
+          <div class="weight-unit">KG</div>
+        </div>
+      </div>
+      <div class="rep-summary">
+        <span class="rep-summary-label">REPS</span>
+        <div class="rep-summary-pills">${pills}</div>
+        <div class="rep-total">total <span>${totalReps > 0 ? totalReps : '—'}</span></div>
+      </div>
+      <div class="nudge ${nudgeHTML ? 'show' : ''}" id="nudge-${ex.id}">${nudgeHTML || ''}</div>
+      <div class="form-cue">
+        ${esc(isAlt ? (ex.altCue || ex.cue) : ex.cue)}
+        ${ex.disc ? `<div class="disc-note">✓ ${esc(ex.disc)}</div>` : ''}
+      </div>
+      <div class="notes-section">
+        <div class="notes-label">Notes</div>
+        <textarea class="notes-input" placeholder="how it felt, seat settings, next time..." oninput="saveNote('${rid}','${ex.id}',this.value);autoResize(this)" onfocus="autoResize(this)">${esc(noteVal)}</textarea>
+      </div>
+    </div>`;
+  return card;
+}
+
+/* ── SMART PROGRESSION ── */
+function computeNudge(rid, ex) {
+  const done = setsOf(ex).every(s => !!checks[ck(rid, ex.id, s)]);
+  if (!done) return null;
+  const w = parseFloat(weights[wkOf(rid, ex)]);
+  const reps = setsOf(ex).map(s => repCounts[ck(rid, ex.id, s)] || 0);
+  const counted = reps.some(v => v > 0);
+  if (counted && reps.every(v => v >= ex.repMax) && !isNaN(w))
+    return `↑ Hit ${ex.sets}×${ex.repMax} — next session try <strong>${(w + 2.5).toFixed(1)}kg</strong>`;
+  if (counted && !isNaN(w))
+    return `→ Keep <strong>${w}kg</strong> — build every set to <strong>${ex.repMax} reps</strong>, then add 2.5`;
+  if (!isNaN(w))
+    return `↑ All sets done — log reps to unlock smart progression, or try <strong>${(w + 2.5).toFixed(1)}kg</strong> next time`;
+  return null;
+}
+function refreshNudge(rid, ex) {
+  const n = document.getElementById('nudge-' + ex.id);
+  if (!n) return;
+  const t = computeNudge(rid, ex);
+  if (t) { n.innerHTML = t; n.classList.add('show'); }
+  else { n.classList.remove('show'); }
+}
+
+/* ── TARGETED REFRESH (keeps input focus) ── */
+function updateRepSummary(rid, ex) {
+  const card = document.querySelector('#workout .ex-card[data-id="' + ex.id + '"]');
+  if (!card) return;
+  const pillsEl = card.querySelector('.rep-summary-pills');
+  const totalEl = card.querySelector('.rep-total span');
+  if (pillsEl) pillsEl.innerHTML = setsOf(ex).map(s => {
+    const rc = repCounts[ck(rid, ex.id, s)] || 0;
+    const h = !!checks[ck(rid, ex.id, s)];
+    return `<span class="rep-pill ${h ? 'active' : ''}">${rc > 0 ? rc : '—'}</span>`;
+  }).join('');
+  if (totalEl) {
+    const t = setsOf(ex).reduce((sum, s) => sum + (repCounts[ck(rid, ex.id, s)] || 0), 0);
+    totalEl.textContent = t > 0 ? t : '—';
+  }
+}
+function refreshExercise(rid, ex) {
+  setsOf(ex).forEach(s => {
+    const d = document.getElementById('dot-' + rid + '-' + ex.id + '-' + s);
+    if (d) d.classList.toggle('hit', !!checks[ck(rid, ex.id, s)]);
+  });
+  const card = document.querySelector('#workout .ex-card[data-id="' + ex.id + '"]');
+  const all = setsOf(ex).every(s => !!checks[ck(rid, ex.id, s)]);
+  if (card) card.classList.toggle('done-card', all);
+  updateRepSummary(rid, ex);
+  refreshNudge(rid, ex);
+  updateProgress();
+}
+
+/* ── INTERACTIONS ── */
+function handleDotClick(rid, exId, s, el) {
+  const ex = findEx(rid, exId); if (!ex) return;
+  const key = ck(rid, exId, s);
+  const was = !!checks[key];
+  checks[key] = !was;
+  save(S.checks, checks);
+  el.classList.add('pop'); setTimeout(() => el.classList.remove('pop'), 200);
+  if (!was) autoStartTimer(alts[ak(rid, exId)] ? (ex.altName || ex.name) : ex.name);
+  refreshExercise(rid, ex);
+}
+function saveRep(rid, exId, s, val) {
+  const ex = findEx(rid, exId); if (!ex) return;
+  const key = ck(rid, exId, s);
+  const num = val === '' ? 0 : (parseInt(val) || 0);
+  repCounts[key] = num;
+  save(S.reps, repCounts);
+  if (num > 0 && !checks[key]) {
+    checks[key] = true; save(S.checks, checks);
+    const d = document.getElementById('dot-' + rid + '-' + exId + '-' + s);
+    if (d) { d.classList.add('pop'); setTimeout(() => d.classList.remove('pop'), 200); }
+    autoStartTimer(alts[ak(rid, exId)] ? (ex.altName || ex.name) : ex.name);
+  }
+  if (num === 0 && checks[key]) { checks[key] = false; save(S.checks, checks); }
+  refreshExercise(rid, ex);
+}
+function saveWeight(rid, exId, val) {
+  const ex = findEx(rid, exId); if (!ex) return;
+  weights[wkOf(rid, ex)] = val;
+  save(S.weights, weights);
+  refreshNudge(rid, ex);
+}
+function saveNote(rid, exId, val) {
+  notes[ak(rid, exId)] = val;
+  save(S.notes, notes);
+}
+function swapAlt(rid, exId) {
+  const k = ak(rid, exId);
+  alts[k] = !alts[k];
+  save(S.alts, alts);
+  render();
+}
+function autoResize(el) {
+  el.style.height = 'auto';
+  el.style.height = Math.max(48, el.scrollHeight) + 'px';
+}
+
+/* ── PROGRESS + DONE ── */
+function updateProgress() {
+  const rid = activeId;
+  const r = getRoutine(rid);
+  if (!r) return;
+  const mains = r.exercises.filter(e => e.group !== 'finisher');
+  const total = mains.length;
+  const done = mains.filter(ex => setsOf(ex).every(s => !!checks[ck(rid, ex.id, s)])).length;
+  document.getElementById('prog-fill').style.width = (total ? done / total * 100 : 0) + '%';
+  document.getElementById('prog-text').textContent = done + ' / ' + total + ' main lifts';
+  const isDone = total > 0 && done === total;
+  const screen = document.getElementById('done-screen');
+  const wasShown = screen.classList.contains('show');
+  screen.classList.toggle('show', isDone);
+  if (isDone) {
+    let setsDone = 0, repsTotal = 0;
+    r.exercises.forEach(ex => setsOf(ex).forEach(s => {
+      if (checks[ck(rid, ex.id, s)]) setsDone++;
+      repsTotal += repCounts[ck(rid, ex.id, s)] || 0;
+    }));
+    document.getElementById('done-stats').innerHTML = `
+      <div class="done-stat"><div class="done-stat-val">${setsDone}</div><div class="done-stat-label">sets done</div></div>
+      <div class="done-stat"><div class="done-stat-val">${repsTotal > 0 ? repsTotal : '—'}</div><div class="done-stat-label">total reps</div></div>
+      <div class="done-stat"><div class="done-stat-val">${streak + 1}</div><div class="done-stat-label">sessions after log</div></div>
+      <div class="done-stat"><div class="done-stat-val">⚡</div><div class="done-stat-label">spine intact</div></div>`;
+    if (!wasShown) screen.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+}
+
+/* ── LOG SESSION ── */
+function logSession() {
+  const rid = activeId;
+  const r = getRoutine(rid);
+  if (!r) return;
+  const mains = r.exercises.filter(e => e.group !== 'finisher');
+  const doneMains = mains.filter(ex => setsOf(ex).every(s => !!checks[ck(rid, ex.id, s)])).length;
+  const msg = doneMains < mains.length
+    ? 'Only ' + doneMains + '/' + mains.length + ' main lifts done. Log anyway and reset ' + r.name + '?'
+    : 'Log this ' + r.name + ' session and reset for next time?';
+  if (!confirm(msg)) return;
+  let tS = 0, tR = 0;
+  const entries = r.exercises.map(ex => {
+    const isAlt = !!alts[ak(rid, ex.id)];
+    const w = weights[wkOf(rid, ex)] || '';
+    const reps = setsOf(ex).map(s => repCounts[ck(rid, ex.id, s)] || 0);
+    const sd = setsOf(ex).filter(s => !!checks[ck(rid, ex.id, s)]).length;
+    tS += sd; tR += reps.reduce((a, b) => a + b, 0);
+    return { id: ex.id, name: isAlt ? ex.altName : ex.name, weight: w, reps: reps, setsDone: sd };
+  }).filter(e => e.weight || e.setsDone > 0 || e.reps.some(v => v > 0));
+  const d = new Date();
+  sessions.push({
+    iso: d.toISOString(),
+    date: d.toLocaleDateString('en-AU', { weekday: 'short', day: '2-digit', month: 'short' }),
+    routineId: rid, routineName: r.name,
+    exercises: entries, totalSets: tS, totalReps: tR
+  });
+  if (sessions.length > 80) sessions = sessions.slice(-80);
+  save(S.sessions, sessions);
   streak++;
   localStorage.setItem(S.streak, streak);
-  const d       = new Date();
-  const dateStr = d.toLocaleDateString('en-AU', { weekday:'short', day:'2-digit', month:'short' });
-  localStorage.setItem(S.lastDate, dateStr);
-
-  // Reset session state (keep notes + weights)
-  checks    = {};
-  repCounts = {};
-  warmup    = false;
+  localStorage.setItem(S.lastDate, sessions[sessions.length - 1].date);
+  Object.keys(checks).forEach(k => { if (k.indexOf(rid + '|') === 0) delete checks[k]; });
+  Object.keys(repCounts).forEach(k => { if (k.indexOf(rid + '|') === 0) delete repCounts[k]; });
   save(S.checks, checks);
-  save(S.repCounts, repCounts);
+  save(S.reps, repCounts);
+  warmup = false;
   localStorage.setItem(S.warmup, '0');
-
+  activeId = nextRoutineId();
+  localStorage.setItem(S.active, activeId);
   resetTimer();
   window.scrollTo({ top: 0, behavior: 'smooth' });
   render();
 }
 
-// ── INIT ──
-render();
-setPhase(`<strong>READY</strong>tap set to start`);
+/* ── HISTORY ── */
+function renderHistory() {
+  const wrap = document.getElementById('history-list');
+  if (!sessions.length) {
+    wrap.innerHTML = '<div class="hist-empty">No sessions logged yet.<br>Finish a workout and hit<br>LOG SESSION &amp; RESET.</div>';
+    return;
+  }
+  wrap.innerHTML = sessions.map((s, i) => ({ s: s, i: i })).reverse().map(o => {
+    const s = o.s;
+    const lines = (s.exercises || []).map(e => {
+      const repStr = (e.reps || []).some(v => v > 0) ? (e.reps || []).map(v => v > 0 ? v : '–').join('/') : '';
+      return '<div class="hist-line"><span class="hl-name">' + esc(e.name) + '</span>'
+        + (e.weight ? '<span class="hl-w">' + esc(e.weight) + 'kg</span>' : '')
+        + (repStr ? '<span class="hl-r">' + repStr + '</span>' : '')
+        + '</div>';
+    }).join('');
+    return '<div class="hist-item"><div class="hist-head" onclick="toggleHist(this)">'
+      + '<span class="hist-date">' + esc(s.date) + '</span>'
+      + '<span class="hist-routine">' + esc(s.routineName || '') + '</span>'
+      + '<span class="hist-meta">' + (s.totalSets || 0) + 's · ' + (s.totalReps || 0) + 'r</span>'
+      + '<button class="hist-del" onclick="delSession(event,' + o.i + ')">✕</button>'
+      + '</div><div class="hist-body">' + (lines || '<div class="hist-line"><span class="hl-name" style="color:#555">no details recorded</span></div>') + '</div></div>';
+  }).join('');
+}
+function toggleHist(el) { el.parentElement.classList.toggle('open'); }
+function delSession(ev, i) {
+  ev.stopPropagation();
+  if (!confirm('Delete this session from history?')) return;
+  sessions.splice(i, 1);
+  save(S.sessions, sessions);
+  renderHistory();
+}
 
-document.querySelectorAll('.notes-input').forEach(el => {
-  if (el.value) autoResize(el);
-});
+/* ── EDITOR ── */
+function renderEditor() {
+  renderPills('ed-pills');
+  const r = getRoutine(activeId);
+  if (!r) return;
+  document.getElementById('ed-name').value = r.name;
+  document.getElementById('ed-list').innerHTML = r.exercises.map(ex => edRow(ex)).join('');
+}
+function edRow(ex) {
+  const open = !!edOpen[ex.id];
+  const groups = [['machine','Machine'],['db','Dumbbell'],['core','Core'],['finisher','Finisher (optional)']];
+  const opts = groups.map(g => `<option value="${g[0]}" ${ex.group === g[0] ? 'selected' : ''}>${g[1]}</option>`).join('');
+  return `<div class="ed-ex ${open ? 'open' : ''}" data-ed="${ex.id}">
+    <div class="ed-ex-head" onclick="toggleEd('${ex.id}')">
+      <div class="ed-ex-title">${esc(ex.name)}</div>
+      <div class="ed-ex-spec">${ex.sets}×${ex.repMin}–${ex.repMax}</div>
+      <button class="ed-btn" onclick="moveEx(event,'${ex.id}',-1)">▲</button>
+      <button class="ed-btn" onclick="moveEx(event,'${ex.id}',1)">▼</button>
+      <button class="ed-btn" onclick="delEx(event,'${ex.id}')">✕</button>
+    </div>
+    <div class="ed-ex-body">
+      <div class="ed-field"><div class="ed-label">Exercise name</div><input class="ed-input" value="${esc(ex.name)}" oninput="edField('${ex.id}','name',this.value)"></div>
+      <div class="ed-field"><div class="ed-label">Alternative (ALT ⇄)</div><input class="ed-input" value="${esc(ex.altName || '')}" oninput="edField('${ex.id}','altName',this.value)"></div>
+      <div class="ed-grid">
+        <div class="ed-field"><div class="ed-label">Sets</div><input class="ed-input" type="number" min="1" max="5" value="${ex.sets}" oninput="edField('${ex.id}','sets',this.value)"></div>
+        <div class="ed-field"><div class="ed-label">Reps min</div><input class="ed-input" type="number" min="1" value="${ex.repMin}" oninput="edField('${ex.id}','repMin',this.value)"></div>
+        <div class="ed-field"><div class="ed-label">Reps max</div><input class="ed-input" type="number" min="1" value="${ex.repMax}" oninput="edField('${ex.id}','repMax',this.value)"></div>
+      </div>
+      <div class="ed-field"><div class="ed-label">Type</div><select class="ed-select" onchange="edField('${ex.id}','group',this.value)">${opts}</select></div>
+      <div class="ed-field"><div class="ed-label">Form cue</div><textarea class="ed-ta" oninput="edField('${ex.id}','cue',this.value)">${esc(ex.cue || '')}</textarea></div>
+      <div class="ed-field"><div class="ed-label">Alt form cue</div><textarea class="ed-ta" oninput="edField('${ex.id}','altCue',this.value)">${esc(ex.altCue || '')}</textarea></div>
+      <div class="ed-field"><div class="ed-label">Why it&#39;s safe / note</div><input class="ed-input" value="${esc(ex.disc || '')}" oninput="edField('${ex.id}','disc',this.value)"></div>
+    </div>
+  </div>`;
+}
+function toggleEd(exId) { edOpen[exId] = !edOpen[exId]; renderEditor(); }
+function edField(exId, f, v) {
+  const ex = findEx(activeId, exId); if (!ex) return;
+  if (f === 'sets') v = Math.max(1, Math.min(5, parseInt(v) || 3));
+  else if (f === 'repMin' || f === 'repMax') v = Math.max(1, parseInt(v) || 1);
+  ex[f] = v;
+  saveRoutines();
+  const row = document.querySelector('.ed-ex[data-ed="' + exId + '"]');
+  if (row) {
+    if (f === 'name') { const t = row.querySelector('.ed-ex-title'); if (t) t.textContent = v; }
+    if (f === 'sets' || f === 'repMin' || f === 'repMax') {
+      const sp = row.querySelector('.ed-ex-spec');
+      if (sp) sp.textContent = ex.sets + '×' + ex.repMin + '–' + ex.repMax;
+    }
+  }
+}
+function renameRoutine(v) {
+  const r = getRoutine(activeId); if (!r) return;
+  r.name = v || 'UNNAMED';
+  saveRoutines();
+  renderPills('ed-pills');
+  renderPills('day-pills');
+}
+function moveEx(ev, exId, dir) {
+  ev.stopPropagation();
+  const r = getRoutine(activeId); if (!r) return;
+  const i = r.exercises.findIndex(e => e.id === exId);
+  const j = i + dir;
+  if (i < 0 || j < 0 || j >= r.exercises.length) return;
+  const moved = r.exercises.splice(i, 1)[0];
+  r.exercises.splice(j, 0, moved);
+  saveRoutines();
+  renderEditor();
+}
+function delEx(ev, exId) {
+  ev.stopPropagation();
+  if (!confirm('Remove this exercise from the day?')) return;
+  const r = getRoutine(activeId); if (!r) return;
+  r.exercises = r.exercises.filter(e => e.id !== exId);
+  saveRoutines();
+  renderEditor();
+}
+function addExercise() {
+  const r = getRoutine(activeId); if (!r) return;
+  const id = 'e' + Date.now().toString(36);
+  r.exercises.push({ id: id, name: 'NEW EXERCISE', altName: '', group: 'machine', sets: 3, repMin: 8, repMax: 12, cue: '', altCue: '', disc: '' });
+  edOpen[id] = true;
+  saveRoutines();
+  renderEditor();
+}
+function addRoutine() {
+  const id = 'r' + Date.now().toString(36);
+  routines.push({ id: id, name: 'DAY ' + String.fromCharCode(65 + (routines.length % 26)), exercises: [] });
+  saveRoutines();
+  activeId = id;
+  localStorage.setItem(S.active, id);
+  renderEditor();
+}
+function dupRoutine() {
+  const r = getRoutine(activeId); if (!r) return;
+  const copy = JSON.parse(JSON.stringify(r));
+  copy.id = 'r' + Date.now().toString(36);
+  copy.name = (r.name + ' COPY').slice(0, 18);
+  routines.push(copy);
+  saveRoutines();
+  activeId = copy.id;
+  localStorage.setItem(S.active, copy.id);
+  renderEditor();
+}
+function delRoutine() {
+  if (routines.length <= 1) { alert('You need at least one workout day.'); return; }
+  const r = getRoutine(activeId); if (!r) return;
+  if (!confirm('Delete "' + r.name + '" and its setup? Logged history stays.')) return;
+  routines = routines.filter(x => x.id !== activeId);
+  saveRoutines();
+  activeId = routines[0].id;
+  localStorage.setItem(S.active, activeId);
+  renderEditor();
+}
+
+/* ── BACKUP ── */
+function exportData() {
+  const dump = {};
+  Object.values(S).forEach(k => {
+    const v = localStorage.getItem(k);
+    if (v !== null) dump[k] = v;
+  });
+  const blob = new Blob([JSON.stringify(dump, null, 2)], { type: 'application/json' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'the-one-backup-' + new Date().toISOString().slice(0, 10) + '.json';
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  setTimeout(() => URL.revokeObjectURL(a.href), 2000);
+}
+function importData(input) {
+  const f = input.files && input.files[0];
+  if (!f) return;
+  const reader = new FileReader();
+  reader.onload = () => {
+    try {
+      const d = JSON.parse(reader.result);
+      if (!d[S.routines]) throw new Error('missing routines');
+      if (!confirm('Replace ALL current data with this backup?')) { input.value = ''; return; }
+      Object.entries(d).forEach(([k, v]) => { if (k.indexOf('g2_') === 0) localStorage.setItem(k, v); });
+      location.reload();
+    } catch (e) {
+      alert('That file is not a valid THE ONE backup.');
+    }
+    input.value = '';
+  };
+  reader.readAsText(f);
+}
+
+/* ── TABS ── */
+function switchTab(t) {
+  curView = t;
+  ['workout', 'history', 'edit'].forEach(v => {
+    document.getElementById('view-' + v).classList.toggle('show', v === t);
+    document.getElementById('tab-' + v).classList.toggle('active', v === t);
+  });
+  if (t === 'history') renderHistory();
+  else if (t === 'edit') renderEditor();
+  else render();
+}
+
+/* ── INIT ── */
+if (!activeId || !routines.some(r => r.id === activeId)) {
+  activeId = nextRoutineId() || routines[0].id;
+  localStorage.setItem(S.active, activeId);
+}
+render();
+setPhase('<strong>READY</strong>tap set to start');
 </script>
 </body>
 </html>
