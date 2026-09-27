@@ -1210,7 +1210,11 @@ Object.keys(alts).forEach(k => { const v = alts[k]; alts[k] = v === true ? 1 : (
 save(S.alts, alts);
 
 /* ── KEY HELPERS ── */
-const ck = (rid, exId, s) => rid + '|' + exId + '|' + s;
+// Reps + ticks are kept per variant. Main keeps the original key format.
+function ck(rid, ex, s) {
+  const k = variantOf(rid, ex).key;
+  return rid + '|' + ex.id + '|' + (k === 'a' ? '' : k + '|') + s;
+}
 const ak = (rid, exId) => rid + '|' + exId;
 function wkOf(rid, ex) { return rid + '|' + ex.id + '|' + variantOf(rid, ex).key; }
 function setsOf(ex) { return Array.from({ length: ex.sets || 3 }, (_, i) => i + 1); }
@@ -1387,7 +1391,7 @@ function buildCard(rid, ex) {
   const tagLabel = { machine:'Machine', db:'Dumbbell', core:'Core', finisher:'Optional' }[ex.group] || 'Machine';
 
   const dots = nums.map(s => {
-    const key = ck(rid, ex.id, s);
+    const key = ck(rid, ex, s);
     const isHit = !!checks[key];
     const rc = repCounts[key] || '';
     const lastRc = lastReps ? (lastReps[s - 1] || 0) : 0;
@@ -1396,12 +1400,12 @@ function buildCard(rid, ex) {
   }).join('');
 
   const pills = nums.map(s => {
-    const rc = repCounts[ck(rid, ex.id, s)] || 0;
-    const h = !!checks[ck(rid, ex.id, s)];
+    const rc = repCounts[ck(rid, ex, s)] || 0;
+    const h = !!checks[ck(rid, ex, s)];
     return `<span class="rep-pill ${h ? 'active' : ''}">${rc > 0 ? rc : '—'}</span>`;
   }).join('');
-  const totalReps = nums.reduce((sum, s) => sum + (repCounts[ck(rid, ex.id, s)] || 0), 0);
-  const allDone = nums.every(s => !!checks[ck(rid, ex.id, s)]);
+  const totalReps = nums.reduce((sum, s) => sum + (repCounts[ck(rid, ex, s)] || 0), 0);
+  const allDone = nums.every(s => !!checks[ck(rid, ex, s)]);
   const nudgeHTML = computeNudge(rid, ex);
   const noteVal = notes[ak(rid, ex.id)] || '';
 
@@ -1455,10 +1459,10 @@ function buildCard(rid, ex) {
 
 /* ── SMART PROGRESSION ── */
 function computeNudge(rid, ex) {
-  const done = setsOf(ex).every(s => !!checks[ck(rid, ex.id, s)]);
+  const done = setsOf(ex).every(s => !!checks[ck(rid, ex, s)]);
   if (!done) return null;
   const w = parseFloat(weights[wkOf(rid, ex)]);
-  const reps = setsOf(ex).map(s => repCounts[ck(rid, ex.id, s)] || 0);
+  const reps = setsOf(ex).map(s => repCounts[ck(rid, ex, s)] || 0);
   const counted = reps.some(v => v > 0);
   if (counted && reps.every(v => v >= ex.repMax) && !isNaN(w))
     return `↑ Hit ${ex.sets}×${ex.repMax} — next session try <strong>${(w + 2.5).toFixed(1)}kg</strong>`;
@@ -1483,22 +1487,22 @@ function updateRepSummary(rid, ex) {
   const pillsEl = card.querySelector('.rep-summary-pills');
   const totalEl = card.querySelector('.rep-total span');
   if (pillsEl) pillsEl.innerHTML = setsOf(ex).map(s => {
-    const rc = repCounts[ck(rid, ex.id, s)] || 0;
-    const h = !!checks[ck(rid, ex.id, s)];
+    const rc = repCounts[ck(rid, ex, s)] || 0;
+    const h = !!checks[ck(rid, ex, s)];
     return `<span class="rep-pill ${h ? 'active' : ''}">${rc > 0 ? rc : '—'}</span>`;
   }).join('');
   if (totalEl) {
-    const t = setsOf(ex).reduce((sum, s) => sum + (repCounts[ck(rid, ex.id, s)] || 0), 0);
+    const t = setsOf(ex).reduce((sum, s) => sum + (repCounts[ck(rid, ex, s)] || 0), 0);
     totalEl.textContent = t > 0 ? t : '—';
   }
 }
 function refreshExercise(rid, ex) {
   setsOf(ex).forEach(s => {
     const d = document.getElementById('dot-' + rid + '-' + ex.id + '-' + s);
-    if (d) d.classList.toggle('hit', !!checks[ck(rid, ex.id, s)]);
+    if (d) d.classList.toggle('hit', !!checks[ck(rid, ex, s)]);
   });
   const card = document.querySelector('#workout .ex-card[data-id="' + ex.id + '"]');
-  const all = setsOf(ex).every(s => !!checks[ck(rid, ex.id, s)]);
+  const all = setsOf(ex).every(s => !!checks[ck(rid, ex, s)]);
   if (card) card.classList.toggle('done-card', all);
   updateRepSummary(rid, ex);
   refreshNudge(rid, ex);
@@ -1508,7 +1512,7 @@ function refreshExercise(rid, ex) {
 /* ── INTERACTIONS ── */
 function handleDotClick(rid, exId, s, el) {
   const ex = findEx(rid, exId); if (!ex) return;
-  const key = ck(rid, exId, s);
+  const key = ck(rid, ex, s);
   const was = !!checks[key];
   checks[key] = !was;
   save(S.checks, checks);
@@ -1518,7 +1522,7 @@ function handleDotClick(rid, exId, s, el) {
 }
 function saveRep(rid, exId, s, val) {
   const ex = findEx(rid, exId); if (!ex) return;
-  const key = ck(rid, exId, s);
+  const key = ck(rid, ex, s);
   const num = val === '' ? 0 : (parseInt(val) || 0);
   repCounts[key] = num;
   save(S.reps, repCounts);
@@ -1566,7 +1570,7 @@ function updateProgress() {
   if (!r) return;
   const mains = r.exercises.filter(e => e.group !== 'finisher');
   const total = mains.length;
-  const done = mains.filter(ex => setsOf(ex).every(s => !!checks[ck(rid, ex.id, s)])).length;
+  const done = mains.filter(ex => setsOf(ex).every(s => !!checks[ck(rid, ex, s)])).length;
   document.getElementById('prog-fill').style.width = (total ? done / total * 100 : 0) + '%';
   document.getElementById('prog-text').textContent = done + ' / ' + total + ' main lifts';
   const isDone = total > 0 && done === total;
@@ -1576,8 +1580,8 @@ function updateProgress() {
   if (isDone) {
     let setsDone = 0, repsTotal = 0;
     r.exercises.forEach(ex => setsOf(ex).forEach(s => {
-      if (checks[ck(rid, ex.id, s)]) setsDone++;
-      repsTotal += repCounts[ck(rid, ex.id, s)] || 0;
+      if (checks[ck(rid, ex, s)]) setsDone++;
+      repsTotal += repCounts[ck(rid, ex, s)] || 0;
     }));
     document.getElementById('done-stats').innerHTML = `
       <div class="done-stat"><div class="done-stat-val">${setsDone}</div><div class="done-stat-label">sets done</div></div>
@@ -1594,7 +1598,7 @@ function logSession() {
   const r = getRoutine(rid);
   if (!r) return;
   const mains = r.exercises.filter(e => e.group !== 'finisher');
-  const doneMains = mains.filter(ex => setsOf(ex).every(s => !!checks[ck(rid, ex.id, s)])).length;
+  const doneMains = mains.filter(ex => setsOf(ex).every(s => !!checks[ck(rid, ex, s)])).length;
   const msg = doneMains < mains.length
     ? 'Only ' + doneMains + '/' + mains.length + ' main lifts done. Log anyway and reset ' + r.name + '?'
     : 'Log this ' + r.name + ' session and reset for next time?';
@@ -1603,8 +1607,8 @@ function logSession() {
   const entries = r.exercises.map(ex => {
     const vv = variantOf(rid, ex);
     const w = weights[wkOf(rid, ex)] || '';
-    const reps = setsOf(ex).map(s => repCounts[ck(rid, ex.id, s)] || 0);
-    const sd = setsOf(ex).filter(s => !!checks[ck(rid, ex.id, s)]).length;
+    const reps = setsOf(ex).map(s => repCounts[ck(rid, ex, s)] || 0);
+    const sd = setsOf(ex).filter(s => !!checks[ck(rid, ex, s)]).length;
     tS += sd; tR += reps.reduce((a, b) => a + b, 0);
     return { id: ex.id, name: vv.name, vk: vv.key, weight: w, reps: reps, setsDone: sd };
   }).filter(e => e.weight || e.setsDone > 0 || e.reps.some(v => v > 0));
