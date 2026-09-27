@@ -1243,8 +1243,12 @@ function lastFor(rid, exId, vr) {
   return null;
 }
 
-/* ── TIMER ── */
+/* ── TIMER ──
+   Counts down to a fixed end time, so it stays accurate when the phone
+   locks or the page is in the background, and survives a page reload. */
 let timerBase = 90, timerLeft = 90, timerRunning = false, timerTick = null, currentExLabel = '';
+let timerEnd = 0, readyTimeout = null;
+const TIMER_KEY = 'g2_timer';
 
 function adjTimer(d) {
   timerBase = Math.max(15, Math.min(300, timerBase + d));
@@ -1256,43 +1260,63 @@ function autoStartTimer(exName) {
   resetTimer(false);
   startTimer(timerBase);
 }
-function startTimer(seconds) {
-  timerLeft = seconds;
+function startTimer(seconds, endAt) {
+  clearInterval(timerTick);
+  clearTimeout(readyTimeout);
+  timerEnd = endAt || (Date.now() + seconds * 1000);
+  try { localStorage.setItem(TIMER_KEY, JSON.stringify({ end: timerEnd, label: currentExLabel })); } catch (e) {}
   timerRunning = true;
-  refreshTimerDisplay();
   document.getElementById('timer-card').classList.add('running');
   document.getElementById('timer-card').classList.remove('ready');
   document.getElementById('t-btn').textContent = 'RESET';
   setPhase('<strong>' + esc(currentExLabel || 'RESTING') + '</strong>rest in progress');
-  timerTick = setInterval(() => {
-    timerLeft--;
+  timerTick = setInterval(tickTimer, 250);
+  tickTimer();
+}
+function tickTimer() {
+  if (!timerRunning) return;
+  timerLeft = Math.max(0, Math.ceil((timerEnd - Date.now()) / 1000));
+  refreshTimerDisplay();
+  if (timerLeft <= 0) finishTimer();
+}
+function finishTimer() {
+  clearInterval(timerTick);
+  timerRunning = false;
+  try { localStorage.removeItem(TIMER_KEY); } catch (e) {}
+  document.getElementById('t-val').textContent = 'GO!';
+  document.getElementById('timer-card').classList.remove('running');
+  document.getElementById('timer-card').classList.add('ready');
+  document.getElementById('t-btn').textContent = 'START';
+  setPhase('<strong>REST DONE</strong>next set ready');
+  if (navigator.vibrate) navigator.vibrate([100, 60, 200]);
+  clearTimeout(readyTimeout);
+  readyTimeout = setTimeout(() => {
+    document.getElementById('timer-card').classList.remove('ready');
+    timerLeft = timerBase;
     refreshTimerDisplay();
-    if (timerLeft <= 0) {
-      clearInterval(timerTick);
-      timerRunning = false;
-      document.getElementById('t-val').textContent = 'GO!';
-      document.getElementById('timer-card').classList.remove('running');
-      document.getElementById('timer-card').classList.add('ready');
-      document.getElementById('t-btn').textContent = 'START';
-      setPhase('<strong>REST DONE</strong>next set ready');
-      if (navigator.vibrate) navigator.vibrate([100, 60, 200]);
-      setTimeout(() => {
-        document.getElementById('timer-card').classList.remove('ready');
-        timerLeft = timerBase;
-        refreshTimerDisplay();
-        setPhase('<strong>READY</strong>tap set to start');
-      }, 3000);
-    }
-  }, 1000);
+    setPhase('<strong>READY</strong>tap set to start');
+  }, 3000);
 }
 function resetTimer(restoreDisplay = true) {
   clearInterval(timerTick);
+  clearTimeout(readyTimeout);
   timerRunning = false;
   timerLeft = timerBase;
+  try { localStorage.removeItem(TIMER_KEY); } catch (e) {}
   document.getElementById('timer-card').classList.remove('running', 'ready');
   document.getElementById('t-btn').textContent = 'START';
   if (restoreDisplay) { refreshTimerDisplay(); setPhase('<strong>READY</strong>tap set to start'); }
 }
+function resumeTimer() {
+  let t = null;
+  try { t = JSON.parse(localStorage.getItem(TIMER_KEY)); } catch (e) {}
+  if (!t || !t.end) return;
+  currentExLabel = t.label || '';
+  if (t.end > Date.now()) startTimer(0, t.end);
+  else { timerRunning = true; finishTimer(); }
+}
+document.addEventListener('visibilitychange', () => { if (!document.hidden) tickTimer(); });
+window.addEventListener('pageshow', tickTimer);
 function refreshTimerDisplay() {
   const el = document.getElementById('t-val');
   if (timerLeft > 0) el.textContent = timerLeft + 's';
@@ -1865,6 +1889,7 @@ if (!activeId || !routines.some(r => r.id === activeId)) {
 }
 render();
 setPhase('<strong>READY</strong>tap set to start');
+resumeTimer();
 </script>
 </body>
 </html>
