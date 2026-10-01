@@ -1043,7 +1043,7 @@ const DEFAULT_ROUTINES = [
       cue:'Thigh pad locked down · curl to full contraction · 3 sec return',
       altCue:'Hips pinned down · squeeze hard at the bottom of the curl',
       disc:'Seated works hamstrings at longer length than lying · zero spinal load' },
-    { id:'brow', moreAlts: [{ name:"Iso-Lateral Row", cue:"Chest on pad · both arms together · lead with elbows · squeeze 1 sec" }, { name:"Seated Cable Row", cue:"Sit tall · lead with elbows · squeeze blades 1 sec" }], name:'Chest-Supported Row', altName:'Machine Row', group:'machine', sets:3, repMin:8, repMax:12,
+    { id:'brow', moreAlts: [{ name:"Chest-Supported DB Row", cue:"Bench at 30–45° · chest on the pad, DBs hanging straight down · row elbows back toward your hips · squeeze 1 sec · set the DBs on the floor before you climb off" }, { name:"Iso-Lateral Row", cue:"Chest on pad · both arms together · lead with elbows · squeeze 1 sec" }, { name:"Seated Cable Row", cue:"Sit tall · lead with elbows · squeeze blades 1 sec" }], name:'Chest-Supported Row', altName:'Machine Row', group:'machine', sets:3, repMin:8, repMax:12,
       cue:'Chest glued to the pad the whole set · lead with elbows · squeeze blades 1 sec',
       altCue:'Chest on pad · same rules · slow release',
       disc:'Chest pad removes ALL lumbar load · safest row for L4–L5 / L5–S1' },
@@ -1204,7 +1204,15 @@ function mergeDefaultAlts() {
   });
 }
 normRoutines();
-if (localStorage.getItem(S.ver) !== '3') { mergeDefaultAlts(); normRoutines(); localStorage.setItem(S.ver, '3'); }
+const _ver = parseInt(localStorage.getItem(S.ver) || '0');
+if (_ver < 3) { mergeDefaultAlts(); normRoutines(); }
+if (_ver < 4) {
+  const _rb = getRoutine('B'), _ex = _rb && _rb.exercises.find(e => e.id === 'brow');
+  if (_ex && !_ex.alts.some(a => String(a.name).toLowerCase() === 'chest-supported db row')) {
+    _ex.alts.push({ k: newAltKey(_ex), name: 'Chest-Supported DB Row', cue: 'Bench at 30–45° · chest on the pad, DBs hanging straight down · row elbows back toward your hips · squeeze 1 sec · set the DBs on the floor before you climb off' });
+  }
+}
+localStorage.setItem(S.ver, '4');
 save(S.routines, routines);
 Object.keys(alts).forEach(k => { const v = alts[k]; alts[k] = v === true ? 1 : (typeof v === 'number' ? v : 0); });
 save(S.alts, alts);
