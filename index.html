@@ -991,7 +991,7 @@ header {
 const DEFAULT_ROUTINES = [
 {
   id: 'A', name: 'DAY A', exercises: [
-    { id:'chest', moreAlts: [{ name:"Smith Machine Flat Press", cue:"Flat bench under the bar · bar to mid-chest · back + head on bench · twist to rack at any point" }, { name:"DB Bench Press", cue:"Sit on bench end, DBs on thighs · lie back hugging them to chest · elbows 45° · reverse to sit up" }], name:'Chest Press Machine', altName:'Dumbbell Floor Press', group:'machine', sets:3, repMin:8, repMax:12,
+    { id:'chest', moreAlts: [{ name:"Hammer Iso-Lateral Bench Press", cue:"Lie flat, handles in line with mid-chest · back + head on the bench, feet flat · press up, stop just short of lockout · 2 sec lower · each arm moves on its own, so keep both sides even" }, { name:"Smith Machine Flat Press", cue:"Flat bench under the bar · bar to mid-chest · back + head on bench · twist to rack at any point" }, { name:"DB Bench Press", cue:"Sit on bench end, DBs on thighs · lie back hugging them to chest · elbows 45° · reverse to sit up" }], name:'Chest Press Machine', altName:'Dumbbell Floor Press', group:'machine', sets:3, repMin:8, repMax:12,
       cue:'Back pinned to pad · elbows 45° · push to near-straight · squeeze 1 sec · 2 sec return',
       altCue:'Lie on floor · elbows 45° · eliminates excessive stretch · back stays flat',
       disc:'Spine-neutral · zero spinal compression' },
@@ -1031,7 +1031,7 @@ const DEFAULT_ROUTINES = [
 },
 {
   id: 'B', name: 'DAY B', exercises: [
-    { id:'bchest', moreAlts: [{ name:"Smith Incline Press", cue:"Bench ~30° · bar to upper chest · back + head on pad · twist to rack at any point" }, { name:"Incline DB Press", cue:"Bench ~30° · sit, DBs on thighs, lie back hugging them · elbows 45° · reverse to sit up" }], name:'Incline Chest Press Machine', altName:'Pec Deck Fly', group:'machine', sets:3, repMin:8, repMax:12,
+    { id:'bchest', moreAlts: [{ name:"Smith Incline Press", cue:"Bench ~30° · bar to upper chest · back + head on pad · twist to rack at any point" }, { name:"Incline DB Press", cue:"Bench ~30° · sit, DBs on thighs, lie back hugging them · elbows 45° · reverse to sit up" }, { name:"Hammer Iso-Lateral Bench Press", cue:"Lie flat, handles in line with mid-chest · back + head on the bench, feet flat · press up, stop just short of lockout · 2 sec lower · each arm moves on its own, so keep both sides even" }], name:'Incline Chest Press Machine', altName:'Pec Deck Fly', group:'machine', sets:3, repMin:8, repMax:12,
       cue:'Back + head pinned to pad · press up and slightly back · squeeze 1 sec · 2 sec return',
       altCue:'Elbows slightly bent · squeeze chest 1 sec · slow open · never overstretch',
       disc:'Upper-chest angle Day A misses · seat supported · zero lumbar load' },
@@ -1206,13 +1206,18 @@ function mergeDefaultAlts() {
 normRoutines();
 const _ver = parseInt(localStorage.getItem(S.ver) || '0');
 if (_ver < 3) { mergeDefaultAlts(); normRoutines(); }
-if (_ver < 4) {
-  const _rb = getRoutine('B'), _ex = _rb && _rb.exercises.find(e => e.id === 'brow');
-  if (_ex && !_ex.alts.some(a => String(a.name).toLowerCase() === 'chest-supported db row')) {
-    _ex.alts.push({ k: newAltKey(_ex), name: 'Chest-Supported DB Row', cue: 'Bench at 30–45° · chest on the pad, DBs hanging straight down · row elbows back toward your hips · squeeze 1 sec · set the DBs on the floor before you climb off' });
-  }
+// Add a new default alt to a saved routine once, at the end, so the selected alt doesn't shift
+function addAltOnce(rid, exId, name, cue) {
+  const r = getRoutine(rid), ex = r && r.exercises.find(e => e.id === exId);
+  if (!ex || ex.alts.some(a => String(a.name).toLowerCase() === name.toLowerCase())) return;
+  ex.alts.push({ k: newAltKey(ex), name: name, cue: cue });
 }
-localStorage.setItem(S.ver, '4');
+if (_ver < 4) addAltOnce('B', 'brow', 'Chest-Supported DB Row', 'Bench at 30–45° · chest on the pad, DBs hanging straight down · row elbows back toward your hips · squeeze 1 sec · set the DBs on the floor before you climb off');
+if (_ver < 5) {
+  addAltOnce('A', 'chest', 'Hammer Iso-Lateral Bench Press', 'Lie flat, handles in line with mid-chest · back + head on the bench, feet flat · press up, stop just short of lockout · 2 sec lower · each arm moves on its own, so keep both sides even');
+  addAltOnce('B', 'bchest', 'Hammer Iso-Lateral Bench Press', 'Lie flat, handles in line with mid-chest · back + head on the bench, feet flat · press up, stop just short of lockout · 2 sec lower · each arm moves on its own, so keep both sides even');
+}
+localStorage.setItem(S.ver, '5');
 save(S.routines, routines);
 Object.keys(alts).forEach(k => { const v = alts[k]; alts[k] = v === true ? 1 : (typeof v === 'number' ? v : 0); });
 save(S.alts, alts);
