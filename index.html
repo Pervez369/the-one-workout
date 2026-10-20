@@ -1031,7 +1031,7 @@ const DEFAULT_ROUTINES = [
 },
 {
   id: 'B', name: 'DAY B', exercises: [
-    { id:'bchest', moreAlts: [{ name:"Smith Incline Press", cue:"Bench ~30° · bar to upper chest · back + head on pad · twist to rack at any point" }, { name:"Incline DB Press", cue:"Bench ~30° · sit, DBs on thighs, lie back hugging them · elbows 45° · reverse to sit up" }, { name:"Hammer Iso-Lateral Bench Press", cue:"Lie flat, handles in line with mid-chest · back + head on the bench, feet flat · press up, stop just short of lockout · 2 sec lower · each arm moves on its own, so keep both sides even" }, { name:"Hammer Seated Chest Press", cue:"Set the seat so handles line up with mid-chest · back + head on the pad · press forward, stop just short of lockout · 2 sec return · keep the stack off the rest between reps" }], name:'Incline Chest Press Machine', altName:'Pec Deck Fly', group:'machine', sets:3, repMin:8, repMax:12,
+    { id:'bchest', moreAlts: [{ name:"Hammer Iso-Lateral Super Incline Press", cue:"Seat so handles start at upper-chest height · back + head on the pad, feet flat · press up and slightly back, stop just short of lockout · 2 sec lower · steep angle works shoulders too, so go a bit lighter · arms alone are 5 kg" }, { name:"Smith Incline Press", cue:"Bench ~30° · bar to upper chest · back + head on pad · twist to rack at any point" }, { name:"Incline DB Press", cue:"Bench ~30° · sit, DBs on thighs, lie back hugging them · elbows 45° · reverse to sit up" }, { name:"Hammer Iso-Lateral Bench Press", cue:"Lie flat, handles in line with mid-chest · back + head on the bench, feet flat · press up, stop just short of lockout · 2 sec lower · each arm moves on its own, so keep both sides even" }, { name:"Hammer Seated Chest Press", cue:"Set the seat so handles line up with mid-chest · back + head on the pad · press forward, stop just short of lockout · 2 sec return · keep the stack off the rest between reps" }], name:'Incline Chest Press Machine', altName:'Pec Deck Fly', group:'machine', sets:3, repMin:8, repMax:12,
       cue:'Back + head pinned to pad · press up and slightly back · squeeze 1 sec · 2 sec return',
       altCue:'Elbows slightly bent · squeeze chest 1 sec · slow open · never overstretch',
       disc:'Upper-chest angle Day A misses · seat supported · zero lumbar load' },
@@ -1226,7 +1226,8 @@ if (_ver < 8) {
   addAltOnce('A', 'fa3', 'Hammer Standing Calf Raise', 'Pads on shoulders loads the spine · go moderate, not heavy · stand tall, knees soft, no lower-back arch · full stretch at the bottom · 2 sec pause at the top');
   addAltOnce('B', 'fb3', 'Hammer Standing Calf Raise', 'Pads on shoulders loads the spine · go moderate, not heavy · stand tall, knees soft, no lower-back arch · full stretch at the bottom · 2 sec pause at the top');
 }
-localStorage.setItem(S.ver, '8');
+if (_ver < 9) addAltOnce('B', 'bchest', 'Hammer Iso-Lateral Super Incline Press', 'Seat so handles start at upper-chest height · back + head on the pad, feet flat · press up and slightly back, stop just short of lockout · 2 sec lower · steep angle works shoulders too, so go a bit lighter · arms alone are 5 kg');
+localStorage.setItem(S.ver, '9');
 save(S.routines, routines);
 Object.keys(alts).forEach(k => { const v = alts[k]; alts[k] = v === true ? 1 : (typeof v === 'number' ? v : 0); });
 save(S.alts, alts);
