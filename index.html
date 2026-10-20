@@ -995,7 +995,7 @@ const DEFAULT_ROUTINES = [
       cue:'Back pinned to pad · elbows 45° · push to near-straight · squeeze 1 sec · 2 sec return',
       altCue:'Lie on floor · elbows 45° · eliminates excessive stretch · back stays flat',
       disc:'Spine-neutral · zero spinal compression' },
-    { id:'legs', moreAlts: [{ name:"Pendulum Squat", cue:"Back + head on pad · feet mid-platform · whole-foot pressure · parallel depth · no hip tuck" }, { name:"V-Squat Machine", cue:"Torso glued to pad · whole-foot pressure · parallel depth · no hip tuck" }], name:'Leg Press', altName:'Hack Squat Machine', group:'machine', sets:3, repMin:10, repMax:15,
+    { id:'legs', moreAlts: [{ name:"Hammer Linear Hack Press", cue:"Back + hips flat on the pad · feet shoulder-width, mid-platform · lower until thighs are about parallel · stop before your tailbone peels off the pad · drive through mid-foot · sled alone is 27 kg" }, { name:"Pendulum Squat", cue:"Back + head on pad · feet mid-platform · whole-foot pressure · parallel depth · no hip tuck" }, { name:"V-Squat Machine", cue:"Torso glued to pad · whole-foot pressure · parallel depth · no hip tuck" }], name:'Leg Press', altName:'Hack Squat Machine', group:'machine', sets:3, repMin:10, repMax:15,
       cue:'Feet shoulder-width mid-plate · lower until thighs parallel · STOP before lower back lifts',
       altCue:'Same depth rule · feet same position · back stays pinned',
       disc:'Back fully supported · replaces barbell squat · L4–L5 / L5–S1 safe' },
@@ -1035,7 +1035,7 @@ const DEFAULT_ROUTINES = [
       cue:'Back + head pinned to pad · press up and slightly back · squeeze 1 sec · 2 sec return',
       altCue:'Elbows slightly bent · squeeze chest 1 sec · slow open · never overstretch',
       disc:'Upper-chest angle Day A misses · seat supported · zero lumbar load' },
-    { id:'blegs', moreAlts: [{ name:"Pendulum Squat", cue:"Back + head on pad · feet mid-platform · whole-foot pressure · parallel depth · no hip tuck" }, { name:"V-Squat Machine", cue:"Torso glued to pad · whole-foot pressure · parallel depth · no hip tuck" }, { name:"Leg Press", cue:"Back + hips glued to pad · thighs to parallel · stop before tailbone lifts" }], name:'Hack Squat Machine', altName:'Leg Extension', group:'machine', sets:3, repMin:10, repMax:15,
+    { id:'blegs', moreAlts: [{ name:"Hammer Linear Hack Press", cue:"Back + hips flat on the pad · feet shoulder-width, mid-platform · lower until thighs are about parallel · stop before your tailbone peels off the pad · drive through mid-foot · sled alone is 27 kg" }, { name:"Pendulum Squat", cue:"Back + head on pad · feet mid-platform · whole-foot pressure · parallel depth · no hip tuck" }, { name:"V-Squat Machine", cue:"Torso glued to pad · whole-foot pressure · parallel depth · no hip tuck" }, { name:"Leg Press", cue:"Back + hips glued to pad · thighs to parallel · stop before tailbone lifts" }], name:'Hack Squat Machine', altName:'Leg Extension', group:'machine', sets:3, repMin:10, repMax:15,
       cue:'Back + head glued to pad · feet slightly high on plate · thighs to parallel · drive through mid-foot',
       altCue:'3 sec lowering · 1 sec pause at the top · no jerking the stack',
       disc:'Quad focus from a new angle · back fully supported' },
@@ -1218,7 +1218,11 @@ if (_ver < 5) {
   addAltOnce('B', 'bchest', 'Hammer Iso-Lateral Bench Press', 'Lie flat, handles in line with mid-chest · back + head on the bench, feet flat · press up, stop just short of lockout · 2 sec lower · each arm moves on its own, so keep both sides even');
 }
 if (_ver < 6) addAltOnce('B', 'bchest', 'Hammer Seated Chest Press', 'Set the seat so handles line up with mid-chest · back + head on the pad · press forward, stop just short of lockout · 2 sec return · keep the stack off the rest between reps');
-localStorage.setItem(S.ver, '6');
+if (_ver < 7) {
+  addAltOnce('A', 'legs', 'Hammer Linear Hack Press', 'Back + hips flat on the pad · feet shoulder-width, mid-platform · lower until thighs are about parallel · stop before your tailbone peels off the pad · drive through mid-foot · sled alone is 27 kg');
+  addAltOnce('B', 'blegs', 'Hammer Linear Hack Press', 'Back + hips flat on the pad · feet shoulder-width, mid-platform · lower until thighs are about parallel · stop before your tailbone peels off the pad · drive through mid-foot · sled alone is 27 kg');
+}
+localStorage.setItem(S.ver, '7');
 save(S.routines, routines);
 Object.keys(alts).forEach(k => { const v = alts[k]; alts[k] = v === true ? 1 : (typeof v === 'number' ? v : 0); });
 save(S.alts, alts);
