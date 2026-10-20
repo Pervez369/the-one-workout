@@ -1023,7 +1023,7 @@ const DEFAULT_ROUTINES = [
       cue:'Elbows pinned to sides · push to full extension · squeeze triceps · control the return',
       altCue:'Back on the pad · stop short of any shoulder strain',
       disc:'Zero spinal load · direct triceps work' },
-    { id:'fa3', name:'Seated Calf Raise', altName:'Calf Press on Leg Press', group:'finisher', sets:2, repMin:15, repMax:20,
+    { id:'fa3', moreAlts: [{ name:"Hammer Standing Calf Raise", cue:"Pads on shoulders loads the spine · go moderate, not heavy · stand tall, knees soft, no lower-back arch · full stretch at the bottom · 2 sec pause at the top" }], name:'Seated Calf Raise', altName:'Calf Press on Leg Press', group:'finisher', sets:2, repMin:15, repMax:20,
       cue:'Full stretch at the bottom · 2 sec pause at the top · slow lower',
       altCue:'Toes on bottom edge of the plate · knees soft, never locked',
       disc:'Seated = zero spinal compression' }
@@ -1063,7 +1063,7 @@ const DEFAULT_ROUTINES = [
       cue:'Back against bench pad · full range · zero swinging',
       altCue:'Stand tall, soft knees · elbows pinned to sides',
       disc:'Seated + light = zero spinal issue' },
-    { id:'fb3', name:'Seated Calf Raise', altName:'Calf Press on Leg Press', group:'finisher', sets:2, repMin:15, repMax:20,
+    { id:'fb3', moreAlts: [{ name:"Hammer Standing Calf Raise", cue:"Pads on shoulders loads the spine · go moderate, not heavy · stand tall, knees soft, no lower-back arch · full stretch at the bottom · 2 sec pause at the top" }], name:'Seated Calf Raise', altName:'Calf Press on Leg Press', group:'finisher', sets:2, repMin:15, repMax:20,
       cue:'Full stretch at the bottom · 2 sec pause at the top',
       altCue:'Toes on bottom edge of the plate · knees soft',
       disc:'Seated = zero spinal compression' }
@@ -1222,7 +1222,11 @@ if (_ver < 7) {
   addAltOnce('A', 'legs', 'Hammer Linear Hack Press', 'Back + hips flat on the pad · feet shoulder-width, mid-platform · lower until thighs are about parallel · stop before your tailbone peels off the pad · drive through mid-foot · sled alone is 27 kg');
   addAltOnce('B', 'blegs', 'Hammer Linear Hack Press', 'Back + hips flat on the pad · feet shoulder-width, mid-platform · lower until thighs are about parallel · stop before your tailbone peels off the pad · drive through mid-foot · sled alone is 27 kg');
 }
-localStorage.setItem(S.ver, '7');
+if (_ver < 8) {
+  addAltOnce('A', 'fa3', 'Hammer Standing Calf Raise', 'Pads on shoulders loads the spine · go moderate, not heavy · stand tall, knees soft, no lower-back arch · full stretch at the bottom · 2 sec pause at the top');
+  addAltOnce('B', 'fb3', 'Hammer Standing Calf Raise', 'Pads on shoulders loads the spine · go moderate, not heavy · stand tall, knees soft, no lower-back arch · full stretch at the bottom · 2 sec pause at the top');
+}
+localStorage.setItem(S.ver, '8');
 save(S.routines, routines);
 Object.keys(alts).forEach(k => { const v = alts[k]; alts[k] = v === true ? 1 : (typeof v === 'number' ? v : 0); });
 save(S.alts, alts);
