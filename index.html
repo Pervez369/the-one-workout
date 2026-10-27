@@ -991,7 +991,7 @@ header {
 const DEFAULT_ROUTINES = [
 {
   id: 'A', name: 'DAY A', exercises: [
-    { id:'chest', moreAlts: [{ name:"Hammer Iso-Lateral Bench Press", cue:"Lie flat, handles in line with mid-chest · back + head on the bench, feet flat · press up, stop just short of lockout · 2 sec lower · each arm moves on its own, so keep both sides even" }, { name:"Smith Machine Flat Press", cue:"Flat bench under the bar · bar to mid-chest · back + head on bench · twist to rack at any point" }, { name:"DB Bench Press", cue:"Sit on bench end, DBs on thighs · lie back hugging them to chest · elbows 45° · reverse to sit up" }], name:'Chest Press Machine', altName:'Dumbbell Floor Press', group:'machine', sets:3, repMin:8, repMax:12,
+    { id:'chest', moreAlts: [{ name:"Hammer Iso-Lateral Bench Press", cue:"Lie flat, handles in line with mid-chest · back + head on the bench, feet flat · press up, stop just short of lockout · 2 sec lower · each arm moves on its own, so keep both sides even" }, { name:"Smith Machine Flat Press", cue:"Flat bench under the bar · bar to mid-chest · back + head on bench · twist to rack at any point" }, { name:"DB Bench Press", cue:"Sit on bench end, DBs on thighs · lie back hugging them to chest · elbows 45° · reverse to sit up" }, { name:"Hammer Iso-Lateral Chest/Back Press", cue:"Seat so handles line up with lower chest · back + head on the pad, feet flat · press forward and slightly down, stop just short of lockout · 2 sec return · keep shoulders down, not shrugged · arms alone are 3 kg" }], name:'Chest Press Machine', altName:'Dumbbell Floor Press', group:'machine', sets:3, repMin:8, repMax:12,
       cue:'Back pinned to pad · elbows 45° · push to near-straight · squeeze 1 sec · 2 sec return',
       altCue:'Lie on floor · elbows 45° · eliminates excessive stretch · back stays flat',
       disc:'Spine-neutral · zero spinal compression' },
@@ -1227,7 +1227,8 @@ if (_ver < 8) {
   addAltOnce('B', 'fb3', 'Hammer Standing Calf Raise', 'Pads on shoulders loads the spine · go moderate, not heavy · stand tall, knees soft, no lower-back arch · full stretch at the bottom · 2 sec pause at the top');
 }
 if (_ver < 9) addAltOnce('B', 'bchest', 'Hammer Iso-Lateral Super Incline Press', 'Seat so handles start at upper-chest height · back + head on the pad, feet flat · press up and slightly back, stop just short of lockout · 2 sec lower · steep angle works shoulders too, so go a bit lighter · arms alone are 5 kg');
-localStorage.setItem(S.ver, '9');
+if (_ver < 10) addAltOnce('A', 'chest', 'Hammer Iso-Lateral Chest/Back Press', 'Seat so handles line up with lower chest · back + head on the pad, feet flat · press forward and slightly down, stop just short of lockout · 2 sec return · keep shoulders down, not shrugged · arms alone are 3 kg');
+localStorage.setItem(S.ver, '10');
 save(S.routines, routines);
 Object.keys(alts).forEach(k => { const v = alts[k]; alts[k] = v === true ? 1 : (typeof v === 'number' ? v : 0); });
 save(S.alts, alts);
