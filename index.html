@@ -1011,7 +1011,7 @@ const DEFAULT_ROUTINES = [
       cue:'Sit tall · slight natural curve · lead with elbow not hand · squeeze blades 1 sec at end',
       altCue:'Rope at head height · pull to face · elbows high + wide · external rotation · go light',
       disc:'Horizontal pull completes back training · seated = spine safe' },
-    { id:'press', moreAlts: [{ name:"Machine Shoulder Press", cue:"Back pinned to pad · press to near-lockout · no shrugging" }], name:'DB Shoulder Press', altName:'Cable Lateral Raise', group:'db', sets:3, repMin:10, repMax:12,
+    { id:'press', moreAlts: [{ name:"Machine Shoulder Press", cue:"Back pinned to pad · press to near-lockout · no shrugging" }, { name:"Hammer Iso-Lateral Shoulder Press", cue:"Seat so handles start at shoulder height · back + head flat on the pad, feet flat · press up, stop just short of lockout · 2 sec lower · no lower-back arch: if you must arch to finish, go lighter · arms alone are 4.5 kg" }], name:'DB Shoulder Press', altName:'Cable Lateral Raise', group:'db', sets:3, repMin:10, repMax:12,
       cue:"Sit on bench · back upright · don't arch lower back · don't fully lock elbows at top",
       altCue:'Cable at lowest setting · lead with elbow · raise to shoulder height · 3 sec descent · very light',
       disc:'Seated removes lumbar load · same bench whole time' },
@@ -1051,7 +1051,7 @@ const DEFAULT_ROUTINES = [
       cue:'Palms facing each other · lean back 10° · pull to upper chest · slow release',
       altCue:'Neutral handles if available · clean reps · no kipping',
       disc:'Neutral grip = shoulder-friendly · decompresses spine' },
-    { id:'bpress', moreAlts: [{ name:"Seated DB Shoulder Press", cue:"Upright bench, back on pad · no lower-back arch · soft lockout" }], name:'Machine Shoulder Press', altName:'Cable Lateral Raise', group:'machine', sets:3, repMin:10, repMax:12,
+    { id:'bpress', moreAlts: [{ name:"Seated DB Shoulder Press", cue:"Upright bench, back on pad · no lower-back arch · soft lockout" }, { name:"Hammer Iso-Lateral Shoulder Press", cue:"Seat so handles start at shoulder height · back + head flat on the pad, feet flat · press up, stop just short of lockout · 2 sec lower · no lower-back arch: if you must arch to finish, go lighter · arms alone are 4.5 kg" }], name:'Machine Shoulder Press', altName:'Cable Lateral Raise', group:'machine', sets:3, repMin:10, repMax:12,
       cue:"Back pinned to pad · press to near-lockout · don't shrug the weight up",
       altCue:'Lead with elbow · raise to shoulder height · 3 sec descent · very light',
       disc:'Machine + back pad = safest overhead press variation' },
@@ -1232,7 +1232,11 @@ if (_ver < 11) {
   addAltOnce('A', 'pull', 'Hammer Iso-Lateral High Row', 'Seat so handles are just reachable · thighs locked under the pad · chest tall, slight lean back · pull elbows down and back toward your ribs · squeeze shoulder blades 1 sec · 2 sec return · no jerking or rocking');
   addAltOnce('B', 'bpull', 'Hammer Iso-Lateral High Row', 'Seat so handles are just reachable · thighs locked under the pad · chest tall, slight lean back · pull elbows down and back toward your ribs · squeeze shoulder blades 1 sec · 2 sec return · no jerking or rocking');
 }
-localStorage.setItem(S.ver, '11');
+if (_ver < 12) {
+  addAltOnce('A', 'press', 'Hammer Iso-Lateral Shoulder Press', 'Seat so handles start at shoulder height · back + head flat on the pad, feet flat · press up, stop just short of lockout · 2 sec lower · no lower-back arch: if you must arch to finish, go lighter · arms alone are 4.5 kg');
+  addAltOnce('B', 'bpress', 'Hammer Iso-Lateral Shoulder Press', 'Seat so handles start at shoulder height · back + head flat on the pad, feet flat · press up, stop just short of lockout · 2 sec lower · no lower-back arch: if you must arch to finish, go lighter · arms alone are 4.5 kg');
+}
+localStorage.setItem(S.ver, '12');
 save(S.routines, routines);
 Object.keys(alts).forEach(k => { const v = alts[k]; alts[k] = v === true ? 1 : (typeof v === 'number' ? v : 0); });
 save(S.alts, alts);
