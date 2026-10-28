@@ -288,125 +288,125 @@ header {
   background: var(--card);
   border: 1px solid var(--border);
   border-radius: 12px;
-  margin-bottom: 10px;
-  overflow: hidden;
+  margin-bottom: 8px;
+  padding: 10px 12px 12px;
   transition: border-color 0.25s, opacity 0.3s;
 }
-.ex-card.done-card {
-  opacity: 0.38;
-  border-color: var(--border);
-}
+.ex-card.done-card { opacity: 0.5; }
+.ex-card.done-card.open { opacity: 0.85; }
 .ex-card.swapped { border-left: 3px solid var(--blue); }
-.ex-card[data-group="machine"] { border-top: 2px solid rgba(232,197,71,0.2); }
-.ex-card[data-group="db"] { border-top: 2px solid rgba(232,197,71,0.2); }
-.ex-card[data-group="core"] { border-top: 2px solid rgba(62,207,110,0.2); }
-.ex-card[data-group="finisher"] { border-top: 2px solid rgba(167,139,250,0.2); }
+.ex-card[data-group="core"] { border-left: 3px solid rgba(62,207,110,0.5); }
+.ex-card[data-group="finisher"] { border-left: 3px solid rgba(167,139,250,0.5); }
 
-/* ── CARD HEADER ── */
-.ex-head { padding: 13px 14px 10px; }
-.ex-head-row {
+/* ── CARD TOP: name + picker + details toggle ── */
+.ex-top { display: flex; align-items: center; gap: 8px; }
+.ex-title {
+  flex: 1;
+  min-width: 0;
   display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
+  align-items: center;
   gap: 8px;
-  margin-bottom: 7px;
+  background: none;
+  border: none;
+  padding: 2px 0;
+  text-align: left;
+  cursor: pointer;
+  color: inherit;
 }
-.ex-name-wrap { flex: 1; }
 .ex-name {
   font-family: 'Bebas Neue', sans-serif;
-  font-size: 1.45rem;
+  font-size: 1.5rem;
   letter-spacing: 0.04em;
   line-height: 1;
   color: var(--acc);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .ex-card.swapped .ex-name { color: var(--blue); }
 .ex-card[data-group="core"] .ex-name { color: var(--green); }
 .ex-card[data-group="finisher"] .ex-name { color: var(--purple); }
-.ex-alt-name {
-  font-size: 0.52rem;
+.chev {
+  font-size: 0.7rem;
   color: var(--muted);
-  margin-top: 2px;
-  display: none;
-}
-.ex-card.swapped .ex-alt-name { display: block; color: var(--blue); }
-.alt-btn {
-  background: var(--card2);
-  color: var(--muted);
-  border: 1px solid var(--border);
-  padding: 5px 10px;
-  border-radius: 6px;
-  font-size: 0.55rem;
-  cursor: pointer;
-  font-family: 'IBM Plex Mono', monospace;
-  white-space: nowrap;
   flex-shrink: 0;
-  transition: all 0.15s;
+  transition: transform 0.2s;
 }
-.alt-btn:active { background: var(--border); }
-.ex-card.swapped .alt-btn { border-color: var(--blue); color: var(--blue); }
-.head-btns { display: flex; flex-direction: column; gap: 4px; align-items: stretch; flex-shrink: 0; }
-.demo-btn { color: #888; }
-.demo-btn:active { color: var(--text); }
-.ex-tags {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  flex-wrap: wrap;
+.ex-card.menu-open .chev { transform: rotate(180deg); color: var(--text); }
+.ex-more {
+  width: 34px; height: 34px;
+  flex-shrink: 0;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--muted);
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.75rem;
+  cursor: pointer;
+  position: relative;
 }
-.tag {
-  font-size: 0.5rem;
-  font-weight: 600;
-  letter-spacing: 0.07em;
-  padding: 2px 7px;
-  border-radius: 3px;
-  text-transform: uppercase;
+.ex-more.has-note::after {
+  content: '';
+  position: absolute; top: 5px; right: 5px;
+  width: 5px; height: 5px; border-radius: 50%;
+  background: var(--acc);
 }
-.tag-machine { background: rgba(232,197,71,0.08); color: var(--acc); border: 1px solid rgba(232,197,71,0.15); }
-.tag-db { background: rgba(232,197,71,0.08); color: var(--acc); border: 1px solid rgba(232,197,71,0.15); }
-.tag-core { background: rgba(62,207,110,0.08); color: var(--green); border: 1px solid rgba(62,207,110,0.15); }
-.tag-finisher { background: rgba(167,139,250,0.08); color: var(--purple); border: 1px solid rgba(167,139,250,0.18); }
-.tag-reps { background: transparent; color: #aaa; border: 1px solid #333; }
-.last-session-row {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 0.54rem;
+.ex-card.open .ex-more { color: var(--text); border-color: #444; }
+
+.ex-meta {
+  font-size: 0.55rem;
   color: #888;
-  margin-top: 6px;
-  flex-wrap: wrap;
+  margin: 4px 0 10px;
+  line-height: 1.6;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
-.last-val { color: var(--text); font-weight: 600; }
-.last-arrow-up { color: var(--green); }
-.last-arrow-same { color: var(--muted); }
-.last-reps-val {
-  color: var(--purple);
-  font-weight: 600;
-}
+.ex-meta b { color: var(--text); font-weight: 600; }
+.ex-meta .m-reps { color: var(--purple); font-weight: 600; }
 .pb-badge {
   font-size: 0.48rem;
   background: rgba(62,207,110,0.1);
   color: var(--green);
   border: 1px solid rgba(62,207,110,0.2);
-  padding: 1px 6px;
+  padding: 0 5px;
   border-radius: 3px;
-  letter-spacing: 0.06em;
+  margin-left: 4px;
 }
 
-/* ── CARD BODY ── */
-.ex-body {
-  padding: 12px 14px 14px;
-  border-top: 1px solid var(--border);
+/* ── ALT PICKER ── */
+.alt-menu {
+  display: none;
+  margin: 0 0 10px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+  background: #0c0c0c;
 }
-
-/* ── SETS + REPS ROW ── */
-.sets-row {
+.ex-card.menu-open .alt-menu { display: block; }
+.alt-opt {
   display: flex;
   align-items: center;
   gap: 8px;
-  margin-bottom: 10px;
+  width: 100%;
+  background: none;
+  border: none;
+  border-bottom: 1px solid var(--muted2);
+  padding: 10px 12px;
+  color: #bbb;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.62rem;
+  text-align: left;
+  cursor: pointer;
 }
-.set-dots { display: flex; gap: 6px; flex: 1; }
+.alt-opt:last-child { border-bottom: none; }
+.alt-opt .tick { width: 12px; color: var(--acc); font-weight: 700; }
+.alt-opt.cur { color: var(--text); background: rgba(232,197,71,0.06); }
+.alt-opt .main-tag { margin-left: auto; font-size: 0.45rem; color: #666; letter-spacing: 0.08em; }
 
+/* ── SETS + WEIGHT ROW ── */
+.sets-row { display: flex; align-items: stretch; gap: 8px; }
+.set-dots { display: flex; gap: 6px; flex: 1; }
 .set-dot {
   flex: 1;
   border-radius: 8px;
@@ -418,7 +418,6 @@ header {
   justify-content: center;
   cursor: pointer;
   transition: all 0.15s;
-  font-size: 0.62rem;
   color: #c8c8c0;
   gap: 2px;
   -webkit-user-select: none;
@@ -427,9 +426,8 @@ header {
   overflow: hidden;
   padding: 8px 4px;
 }
-.set-dot .set-num { font-size: 0.65rem; font-weight: 600; color: #888; }
+.set-dot .set-num { font-size: 0.55rem; font-weight: 600; color: #777; }
 .set-dot.hit .set-num { color: rgba(0,0,0,0.5); }
-
 .set-dot .rep-input {
   width: 100%;
   background: transparent;
@@ -446,105 +444,43 @@ header {
   user-select: text;
 }
 .set-dot .rep-input::placeholder { color: var(--muted2); font-size: 1rem; }
-.set-dot .rep-label {
-  font-size: 0.38rem;
-  color: #555;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-}
-.set-dot .rep-last {
-  font-size: 0.38rem;
-  color: #5a4f8a;
-  letter-spacing: 0.04em;
-  line-height: 1.2;
-}
-.set-dot.hit .rep-last { color: rgba(0,0,0,0.3); }
-
+.set-dot .rep-last { font-size: 0.42rem; color: #5a4f8a; line-height: 1.2; }
+.set-dot.hit .rep-last { color: rgba(0,0,0,0.35); }
 .set-dot:active { transform: scale(0.93); }
-
-.set-dot.hit {
-  background: var(--acc);
-  border-color: var(--acc);
-  color: #000;
-  font-weight: 700;
-}
+.set-dot.hit { background: var(--acc); border-color: var(--acc); color: #000; font-weight: 700; }
 .set-dot.hit .rep-input { color: #000; }
 .set-dot.hit .rep-input::placeholder { color: rgba(0,0,0,0.3); }
-.set-dot.hit .rep-label { color: rgba(0,0,0,0.4); }
-
 .ex-card.swapped .set-dot.hit { background: var(--blue); border-color: var(--blue); }
-.ex-card.swapped .set-dot.hit .rep-input { color: #000; }
-.ex-card[data-group="core"] .set-dot.hit { background: var(--green); border-color: var(--green); color: #000; }
-.ex-card[data-group="core"] .set-dot.hit .rep-input { color: #000; }
-.ex-card[data-group="finisher"] .set-dot.hit { background: var(--purple); border-color: var(--purple); color: #000; }
-.ex-card[data-group="finisher"] .set-dot.hit .rep-input { color: #000; }
+.ex-card[data-group="core"] .set-dot.hit { background: var(--green); border-color: var(--green); }
+.ex-card[data-group="finisher"] .set-dot.hit { background: var(--purple); border-color: var(--purple); }
 
 .weight-box {
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
   background: #000;
   border: 1px solid var(--border);
   border-radius: 8px;
-  padding: 8px 10px;
-  min-width: 74px;
+  padding: 6px 8px;
+  min-width: 84px;
   gap: 2px;
   transition: border-color 0.2s;
 }
 .weight-box:focus-within { border-color: var(--acc); }
 .weight-input {
-  width: 56px;
+  width: 70px;
   background: transparent;
   border: none;
   color: var(--acc);
-  font-size: 1.5rem;
+  font-size: 1.35rem;
   font-weight: 700;
   outline: none;
   text-align: center;
   font-family: 'IBM Plex Mono', monospace;
 }
 .weight-input::placeholder { color: var(--muted2); font-size: 1.2rem; }
-.weight-unit { font-size: 0.5rem; color: #888; letter-spacing: 0.1em; }
-
-/* ── REP SUMMARY ── */
-.rep-summary {
-  display: flex;
-  gap: 6px;
-  margin-bottom: 10px;
-  align-items: center;
-}
-.rep-summary-label {
-  font-size: 0.5rem;
-  color: #555;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  flex-shrink: 0;
-}
-.rep-summary-pills {
-  display: flex;
-  gap: 4px;
-  flex-wrap: wrap;
-}
-.rep-pill {
-  font-size: 0.52rem;
-  background: var(--muted2);
-  color: #aaa;
-  border: 1px solid var(--border);
-  padding: 2px 8px;
-  border-radius: 4px;
-  font-weight: 600;
-}
-.rep-pill.active {
-  background: rgba(232,197,71,0.1);
-  color: var(--acc);
-  border-color: rgba(232,197,71,0.25);
-}
-.rep-total {
-  margin-left: auto;
-  font-size: 0.52rem;
-  color: #555;
-}
-.rep-total span { color: var(--text); font-weight: 600; }
+.weight-unit { font-size: 0.48rem; color: #777; letter-spacing: 0.1em; }
 
 /* ── OVERLOAD NUDGE ── */
 .nudge {
@@ -561,49 +497,37 @@ header {
 .nudge.show { display: block; }
 .nudge strong { color: #fff; }
 
-/* ── FORM CUE ── */
-.form-cue {
-  margin-top: 10px;
-  font-size: 0.6rem;
-  color: #b0b0a8;
-  line-height: 1.9;
-  padding-top: 10px;
-  border-top: 1px solid var(--muted2);
+/* ── DETAILS (cue · safety · notes) — hidden until ⓘ ── */
+.ex-details { display: none; margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--muted2); }
+.ex-card.open .ex-details { display: block; }
+.form-cue { font-size: 0.6rem; color: #b0b0a8; line-height: 1.9; }
+.form-cue .disc-note { color: #4a9e6a; font-size: 0.56rem; margin-top: 4px; }
+.demo-btn {
+  display: inline-block;
+  margin-top: 8px;
+  background: var(--card2);
+  color: #999;
+  border: 1px solid var(--border);
+  padding: 5px 10px;
+  border-radius: 6px;
+  font-size: 0.55rem;
+  cursor: pointer;
+  font-family: 'IBM Plex Mono', monospace;
 }
-.form-cue .disc-note {
-  color: #4a9e6a;
-  font-size: 0.56rem;
-  margin-top: 4px;
-}
-
-/* ── NOTES SECTION ── */
-.notes-section {
-  margin-top: 10px;
-  padding-top: 10px;
-  border-top: 1px solid var(--muted2);
-}
+.notes-section { margin-top: 10px; }
 .notes-label {
   font-size: 0.48rem;
   color: #555;
   letter-spacing: 0.1em;
   text-transform: uppercase;
   margin-bottom: 5px;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-.notes-label::after {
-  content: '';
-  flex: 1;
-  height: 1px;
-  background: var(--muted2);
 }
 .notes-input {
   width: 100%;
   background: #0c0c0c;
   border: 1px solid var(--border);
   border-radius: 6px;
-  color: #ccc;
+  color: #e0ddd6;
   font-family: 'IBM Plex Mono', monospace;
   font-size: 0.6rem;
   line-height: 1.7;
@@ -611,15 +535,10 @@ header {
   resize: none;
   min-height: 48px;
   outline: none;
-  transition: border-color 0.2s, min-height 0.2s;
   overflow: hidden;
 }
-.notes-input:focus {
-  border-color: rgba(232,197,71,0.3);
-  min-height: 72px;
-}
+.notes-input:focus { border-color: rgba(232,197,71,0.3); }
 .notes-input::placeholder { color: #2e2e2e; }
-.notes-input:not(:placeholder-shown) { color: #e0ddd6; }
 
 /* ── HOME NOTE (McGill Big 3) ── */
 .home-note {
@@ -1433,97 +1352,77 @@ function render() {
   document.querySelectorAll('#workout .notes-input').forEach(el => { if (el.value) autoResize(el); });
 }
 
+let openCards = {};   // which cards show cue/notes (this visit only)
+
 function buildCard(rid, ex) {
   const v = variantOf(rid, ex);
   const isAlt = v.idx > 0;
-  const nAlts = (ex.alts || []).length;
+  const altList = ex.alts || [];
   const curW = weights[wkOf(rid, ex)] || '';
   const last = lastFor(rid, ex.id, v);
   const lastW = last && last.weight ? last.weight : '';
   const lastReps = last && last.reps ? last.reps : null;
   const nums = setsOf(ex);
+  const noteVal = notes[ak(rid, ex.id)] || '';
 
-  const lastRepStr = (lastReps && lastReps.some(v => v > 0))
-    ? nums.map(s => (lastReps[s - 1] && lastReps[s - 1] > 0) ? lastReps[s - 1] : '?').join(' / ')
-    : '';
-  let lastHTML;
+  const tagLabel = { machine:'Machine', db:'Dumbbell', core:'Core', finisher:'Optional' }[ex.group] || 'Machine';
+  const lastRepStr = (lastReps && lastReps.some(x => x > 0))
+    ? nums.map(s => (lastReps[s - 1] > 0) ? lastReps[s - 1] : '–').join('/') : '';
+  const isPB = curW && lastW && parseFloat(curW) > parseFloat(lastW);
+  let meta = `${tagLabel} · ${ex.sets} × ${ex.repMin}–${ex.repMax}`;
   if (lastW || lastRepStr) {
-    const isPB = curW && lastW && parseFloat(curW) > parseFloat(lastW);
-    lastHTML = '<div class="last-session-row">'
-      + (lastW ? `<span>LAST: <span class="last-val">${esc(lastW)}kg</span></span>` : '')
-      + (lastW && lastRepStr ? '<span style="color:#333">·</span>' : '')
-      + (lastRepStr ? `<span>REPS: <span class="last-reps-val">${lastRepStr}</span></span>` : '')
-      + (isPB ? '<span class="last-arrow-up">↑</span><span class="pb-badge">NEW PB</span>' : '')
-      + '</div>';
+    meta += ' · last' + (lastW ? ` <b>${esc(lastW)}kg</b>` : '') + (lastRepStr ? ` <span class="m-reps">${lastRepStr}</span>` : '');
+    if (isPB) meta += '<span class="pb-badge">NEW PB</span>';
   } else {
-    lastHTML = '<div class="last-session-row"><span style="color:#2a2a2a">no history yet — set your baseline</span></div>';
+    meta += ' · <span style="color:#444">no history yet</span>';
   }
 
-  const tagClass = { machine:'tag-machine', db:'tag-db', core:'tag-core', finisher:'tag-finisher' }[ex.group] || 'tag-machine';
-  const tagLabel = { machine:'Machine', db:'Dumbbell', core:'Core', finisher:'Optional' }[ex.group] || 'Machine';
+  const menu = altList.length ? '<div class="alt-menu">'
+    + `<button class="alt-opt ${v.idx === 0 ? 'cur' : ''}" onclick="pickAlt('${rid}','${ex.id}',0)"><span class="tick">${v.idx === 0 ? '✓' : ''}</span>${esc(ex.name)}<span class="main-tag">MAIN</span></button>`
+    + altList.map((a, i) => `<button class="alt-opt ${v.idx === i + 1 ? 'cur' : ''}" onclick="pickAlt('${rid}','${ex.id}',${i + 1})"><span class="tick">${v.idx === i + 1 ? '✓' : ''}</span>${esc(a.name)}</button>`).join('')
+    + '</div>' : '';
 
   const dots = nums.map(s => {
     const key = ck(rid, ex, s);
-    const isHit = !!checks[key];
     const rc = repCounts[key] || '';
     const lastRc = lastReps ? (lastReps[s - 1] || 0) : 0;
-    const ghost = lastRc > 0 ? `<span class="rep-last">prev:${lastRc}</span>` : '';
-    return `<div class="set-dot ${isHit ? 'hit' : ''}" id="dot-${rid}-${ex.id}-${s}" onclick="handleDotClick('${rid}','${ex.id}',${s},this)"><span class="set-num">S${s}</span><input class="rep-input" type="number" inputmode="numeric" placeholder="–" value="${rc}" onclick="event.stopPropagation()" oninput="saveRep('${rid}','${ex.id}',${s},this.value)"><span class="rep-label">reps</span>${ghost}</div>`;
+    const ghost = lastRc > 0 ? `<span class="rep-last">prev ${lastRc}</span>` : '';
+    return `<div class="set-dot ${checks[key] ? 'hit' : ''}" id="dot-${rid}-${ex.id}-${s}" onclick="handleDotClick('${rid}','${ex.id}',${s},this)"><span class="set-num">S${s}</span><input class="rep-input" type="number" inputmode="numeric" placeholder="–" value="${rc}" onclick="event.stopPropagation()" oninput="saveRep('${rid}','${ex.id}',${s},this.value)">${ghost}</div>`;
   }).join('');
 
-  const pills = nums.map(s => {
-    const rc = repCounts[ck(rid, ex, s)] || 0;
-    const h = !!checks[ck(rid, ex, s)];
-    return `<span class="rep-pill ${h ? 'active' : ''}">${rc > 0 ? rc : '—'}</span>`;
-  }).join('');
-  const totalReps = nums.reduce((sum, s) => sum + (repCounts[ck(rid, ex, s)] || 0), 0);
   const allDone = nums.every(s => !!checks[ck(rid, ex, s)]);
   const nudgeHTML = computeNudge(rid, ex);
-  const noteVal = notes[ak(rid, ex.id)] || '';
 
   const card = document.createElement('div');
-  card.className = `ex-card ${isAlt ? 'swapped' : ''} ${allDone ? 'done-card' : ''}`;
+  card.className = `ex-card ${isAlt ? 'swapped' : ''} ${allDone ? 'done-card' : ''} ${openCards[ex.id] ? 'open' : ''}`;
   card.dataset.id = ex.id;
   card.dataset.group = ex.group;
   card.innerHTML = `
-    <div class="ex-head">
-      <div class="ex-head-row">
-        <div class="ex-name-wrap">
-          <div class="ex-name">${esc(v.name)}</div>
-          <div class="ex-alt-name">ALT ${v.idx} of ${nAlts} · main: ${esc(ex.name)}</div>
-        </div>
-        <div class="head-btns">
-          ${nAlts ? `<button class="alt-btn" onclick="swapAlt('${rid}','${ex.id}')">${nAlts > 1 ? 'ALTS ' + nAlts + ' ⇄' : 'ALT ⇄'}</button>` : ''}
-          <button class="alt-btn demo-btn" onclick="openDemo('${rid}','${ex.id}')">▶ DEMO</button>
-        </div>
-      </div>
-      <div class="ex-tags">
-        <span class="tag ${tagClass}">${tagLabel}</span>
-        <span class="tag tag-reps">${ex.sets} × ${ex.repMin}–${ex.repMax}</span>
-      </div>
-      ${lastHTML}
+    <div class="ex-top">
+      <button class="ex-title" ${altList.length ? `onclick="toggleAltMenu('${ex.id}')"` : ''}>
+        <span class="ex-name">${esc(v.name)}</span>${altList.length ? '<span class="chev">▼</span>' : ''}
+      </button>
+      <button class="ex-more ${noteVal ? 'has-note' : ''}" onclick="toggleCard('${ex.id}')" title="cue & notes">ⓘ</button>
     </div>
-    <div class="ex-body">
-      <div class="sets-row">
-        <div class="set-dots">${dots}</div>
-        <div class="weight-box">
-          <input class="weight-input" type="number" inputmode="decimal" placeholder="—" value="${esc(curW)}" oninput="saveWeight('${rid}','${ex.id}',this.value)" onclick="event.stopPropagation()">
-          <div class="weight-unit">KG</div>
-        </div>
+    <div class="ex-meta">${meta}</div>
+    ${menu}
+    <div class="sets-row">
+      <div class="set-dots">${dots}</div>
+      <div class="weight-box">
+        <input class="weight-input" type="number" inputmode="decimal" placeholder="—" value="${esc(curW)}" oninput="saveWeight('${rid}','${ex.id}',this.value)" onclick="event.stopPropagation()">
+        <div class="weight-unit">KG</div>
       </div>
-      <div class="rep-summary">
-        <span class="rep-summary-label">REPS</span>
-        <div class="rep-summary-pills">${pills}</div>
-        <div class="rep-total">total <span>${totalReps > 0 ? totalReps : '—'}</span></div>
-      </div>
-      <div class="nudge ${nudgeHTML ? 'show' : ''}" id="nudge-${ex.id}">${nudgeHTML || ''}</div>
+    </div>
+    <div class="nudge ${nudgeHTML ? 'show' : ''}" id="nudge-${ex.id}">${nudgeHTML || ''}</div>
+    <div class="ex-details">
       <div class="form-cue">
         ${esc(v.cue)}
         ${ex.disc ? `<div class="disc-note">✓ ${esc(ex.disc)}</div>` : ''}
       </div>
+      <button class="demo-btn" onclick="openDemo('${rid}','${ex.id}')">▶ DEMO VIDEO</button>
       <div class="notes-section">
-        <div class="notes-label">Notes</div>
-        <textarea class="notes-input" placeholder="how it felt, seat settings, next time..." oninput="saveNote('${rid}','${ex.id}',this.value);autoResize(this)" onfocus="autoResize(this)">${esc(noteVal)}</textarea>
+        <div class="notes-label">Notes · seat settings, how it felt</div>
+        <textarea class="notes-input" placeholder="…" oninput="saveNote('${rid}','${ex.id}',this.value);autoResize(this)" onfocus="autoResize(this)">${esc(noteVal)}</textarea>
       </div>
     </div>`;
   return card;
@@ -1553,21 +1452,6 @@ function refreshNudge(rid, ex) {
 }
 
 /* ── TARGETED REFRESH (keeps input focus) ── */
-function updateRepSummary(rid, ex) {
-  const card = document.querySelector('#workout .ex-card[data-id="' + ex.id + '"]');
-  if (!card) return;
-  const pillsEl = card.querySelector('.rep-summary-pills');
-  const totalEl = card.querySelector('.rep-total span');
-  if (pillsEl) pillsEl.innerHTML = setsOf(ex).map(s => {
-    const rc = repCounts[ck(rid, ex, s)] || 0;
-    const h = !!checks[ck(rid, ex, s)];
-    return `<span class="rep-pill ${h ? 'active' : ''}">${rc > 0 ? rc : '—'}</span>`;
-  }).join('');
-  if (totalEl) {
-    const t = setsOf(ex).reduce((sum, s) => sum + (repCounts[ck(rid, ex, s)] || 0), 0);
-    totalEl.textContent = t > 0 ? t : '—';
-  }
-}
 function refreshExercise(rid, ex) {
   setsOf(ex).forEach(s => {
     const d = document.getElementById('dot-' + rid + '-' + ex.id + '-' + s);
@@ -1576,7 +1460,6 @@ function refreshExercise(rid, ex) {
   const card = document.querySelector('#workout .ex-card[data-id="' + ex.id + '"]');
   const all = setsOf(ex).every(s => !!checks[ck(rid, ex, s)]);
   if (card) card.classList.toggle('done-card', all);
-  updateRepSummary(rid, ex);
   refreshNudge(rid, ex);
   updateProgress();
 }
@@ -1617,13 +1500,26 @@ function saveNote(rid, exId, val) {
   notes[ak(rid, exId)] = val;
   save(S.notes, notes);
 }
-function swapAlt(rid, exId) {
+function toggleAltMenu(exId) {
+  const card = document.querySelector('#workout .ex-card[data-id="' + exId + '"]');
+  if (!card) return;
+  const opening = !card.classList.contains('menu-open');
+  document.querySelectorAll('#workout .ex-card.menu-open').forEach(c => c.classList.remove('menu-open'));
+  if (opening) card.classList.add('menu-open');
+}
+function pickAlt(rid, exId, idx) {
   const ex = findEx(rid, exId); if (!ex) return;
-  const n = (ex.alts || []).length; if (!n) return;
-  const k = ak(rid, exId);
-  alts[k] = ((alts[k] || 0) + 1) % (n + 1);
+  const n = (ex.alts || []).length;
+  alts[ak(rid, exId)] = Math.max(0, Math.min(n, idx));
   save(S.alts, alts);
   render();
+}
+function toggleCard(exId) {
+  openCards[exId] = !openCards[exId];
+  const card = document.querySelector('#workout .ex-card[data-id="' + exId + '"]');
+  if (!card) return;
+  card.classList.toggle('open', !!openCards[exId]);
+  if (openCards[exId]) { const t = card.querySelector('.notes-input'); if (t && t.value) autoResize(t); }
 }
 function openDemo(rid, exId) {
   const ex = findEx(rid, exId); if (!ex) return;
