@@ -914,8 +914,8 @@ const DEFAULT_ROUTINES = [
       cue:'Back pinned to pad · elbows 45° · push to near-straight · squeeze 1 sec · 2 sec return',
       altCue:'Lie on floor · elbows 45° · eliminates excessive stretch · back stays flat',
       disc:'Spine-neutral · zero spinal compression' },
-    { id:'legs', moreAlts: [{ name:"Hammer Linear Hack Press", cue:"Back + hips flat on the pad · feet shoulder-width, mid-platform · lower until thighs are about parallel · stop before your tailbone peels off the pad · drive through mid-foot · sled alone is 27 kg" }, { name:"Pendulum Squat", cue:"Back + head on pad · feet mid-platform · whole-foot pressure · parallel depth · no hip tuck" }], name:'Leg Press', altName:'Hack Squat Machine', group:'machine', sets:3, repMin:10, repMax:15,
-      cue:'Feet shoulder-width mid-plate · lower until thighs parallel · STOP before lower back lifts',
+    { id:'legs', moreAlts: [{ name:"Hammer Linear Hack Press", cue:"Back + hips flat on the pad · feet shoulder-width, mid-platform · lower until thighs are about parallel · stop before your tailbone peels off the pad · drive through mid-foot · sled alone is 27 kg" }, { name:"Pendulum Squat", cue:"Back + head on pad · feet mid-platform · whole-foot pressure · parallel depth · no hip tuck" }], name:'Hammer Linear Leg Press', altName:'Hack Squat Machine', group:'machine', sets:3, repMin:10, repMax:15,
+      cue:'Back + hips flat on the pad · feet shoulder-width, mid-plate · lower until thighs are about parallel · STOP before your tailbone or lower back lifts · drive through mid-foot · sled alone is 53 kg',
       altCue:'Same depth rule · feet same position · back stays pinned',
       disc:'Back fully supported · replaces barbell squat · L4–L5 / L5–S1 safe' },
     { id:'curl', moreAlts: [{ name:"Seated Leg Curl", cue:"Thigh pad locked down · curl fully · 3 sec return" }], name:'Leg Curl Machine', altName:'Lying Leg Curl', group:'machine', sets:3, repMin:10, repMax:15,
@@ -954,7 +954,7 @@ const DEFAULT_ROUTINES = [
       cue:'Back + head pinned to pad · press up and slightly back · squeeze 1 sec · 2 sec return',
       altCue:'Elbows slightly bent · squeeze chest 1 sec · slow open · never overstretch',
       disc:'Upper-chest angle Day A misses · seat supported · zero lumbar load' },
-    { id:'blegs', moreAlts: [{ name:"Hammer Linear Hack Press", cue:"Back + hips flat on the pad · feet shoulder-width, mid-platform · lower until thighs are about parallel · stop before your tailbone peels off the pad · drive through mid-foot · sled alone is 27 kg" }, { name:"Pendulum Squat", cue:"Back + head on pad · feet mid-platform · whole-foot pressure · parallel depth · no hip tuck" }, { name:"Leg Press", cue:"Back + hips glued to pad · thighs to parallel · stop before tailbone lifts" }], name:'Hack Squat Machine', altName:'Leg Extension', group:'machine', sets:3, repMin:10, repMax:15,
+    { id:'blegs', moreAlts: [{ name:"Hammer Linear Hack Press", cue:"Back + hips flat on the pad · feet shoulder-width, mid-platform · lower until thighs are about parallel · stop before your tailbone peels off the pad · drive through mid-foot · sled alone is 27 kg" }, { name:"Pendulum Squat", cue:"Back + head on pad · feet mid-platform · whole-foot pressure · parallel depth · no hip tuck" }, { name:"Hammer Linear Leg Press", cue:"Back + hips flat on the pad · feet shoulder-width, mid-plate · lower until thighs are about parallel · STOP before your tailbone or lower back lifts · drive through mid-foot · sled alone is 53 kg" }], name:'Hack Squat Machine', altName:'Leg Extension', group:'machine', sets:3, repMin:10, repMax:15,
       cue:'Back + head glued to pad · feet slightly high on plate · thighs to parallel · drive through mid-foot',
       altCue:'3 sec lowering · 1 sec pause at the top · no jerking the stack',
       disc:'Quad focus from a new angle · back fully supported' },
@@ -1171,7 +1171,14 @@ if (_ver < 13) {
   removeAlt('A', 'legs', 'V-Squat Machine');
   removeAlt('B', 'blegs', 'V-Squat Machine');
 }
-localStorage.setItem(S.ver, '13');
+if (_ver < 14) {
+  const _a = getRoutine('A'), _l = _a && _a.exercises.find(e => e.id === 'legs');
+  if (_l && _l.name === 'Leg Press') { _l.name = 'Hammer Linear Leg Press'; _l.cue = 'Back + hips flat on the pad · feet shoulder-width, mid-plate · lower until thighs are about parallel · STOP before your tailbone or lower back lifts · drive through mid-foot · sled alone is 53 kg'; }
+  const _b = getRoutine('B'), _bl = _b && _b.exercises.find(e => e.id === 'blegs');
+  const _lp = _bl && _bl.alts.find(a => a.name === 'Leg Press');
+  if (_lp) { _lp.name = 'Hammer Linear Leg Press'; _lp.cue = 'Back + hips flat on the pad · feet shoulder-width, mid-plate · lower until thighs are about parallel · STOP before your tailbone or lower back lifts · drive through mid-foot · sled alone is 53 kg'; }
+}
+localStorage.setItem(S.ver, '14');
 save(S.routines, routines);
 Object.keys(alts).forEach(k => { const v = alts[k]; alts[k] = v === true ? 1 : (typeof v === 'number' ? v : 0); });
 save(S.alts, alts);
