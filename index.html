@@ -1084,12 +1084,12 @@ function variantOf(rid, ex) {
   const list = ex.alts || [];
   let i = alts[ak(rid, ex.id)] || 0;
   if (i > list.length || i < 0) i = 0;
-  if (i === 0) return { idx: 0, key: 'a', name: ex.name, cue: ex.cue || '' };
+  if (i === 0) return { idx: 0, key: ex.mk || 'a', name: ex.name, cue: ex.cue || '', disc: ex.mdisc || ex.disc || '', type: ex.mtype || '' };
   const a = list[i - 1];
-  return { idx: i, key: a.k, name: a.name || ('Alt ' + i), cue: a.cue || ex.cue || '' };
+  return { idx: i, key: a.k, name: a.name || ('Alt ' + i), cue: a.cue || ex.cue || '', disc: a.disc || ex.disc || '', type: a.type || '' };
 }
 function newAltKey(ex) {
-  const used = new Set((ex.alts || []).map(a => a.k));
+  const used = new Set((ex.alts || []).map(a => a.k).concat(ex.mk || 'a'));
   for (const c of 'bcdefghijklmnopqrstuvwxyz') if (!used.has(c)) return c;
   return 'x' + Date.now().toString(36);
 }
@@ -1097,7 +1097,7 @@ function normRoutines() {
   routines.forEach(r => (r.exercises || []).forEach(ex => {
     if (!Array.isArray(ex.alts)) ex.alts = ex.altName ? [{ k: 'b', name: ex.altName, cue: ex.altCue || '' }] : [];
     delete ex.altName; delete ex.altCue; delete ex.moreAlts;
-    const used = new Set();
+    const used = new Set([ex.mk || 'a']);
     ex.alts.forEach(a => { if (a.k && !used.has(a.k)) used.add(a.k); else a.k = null; });
     ex.alts.forEach(a => {
       if (a.k) return;
@@ -1138,10 +1138,36 @@ function removeAlt(rid, exId, name) {
   else if (sel > i + 1) alts[k] = sel - 1;
   save(S.alts, alts);
 }
-function addAltOnce(rid, exId, name, cue) {
+function addAltOnce(rid, exId, name, cue, disc, type) {
   const r = getRoutine(rid), ex = r && r.exercises.find(e => e.id === exId);
   if (!ex || ex.alts.some(a => String(a.name).toLowerCase() === name.toLowerCase())) return;
-  ex.alts.push({ k: newAltKey(ex), name: name, cue: cue });
+  const a = { k: newAltKey(ex), name: name, cue: cue };
+  if (disc) a.disc = disc;
+  if (type) a.type = type;
+  ex.alts.push(a);
+}
+// Make `name` the slot's main exercise. The old main moves to the top of the alts
+// and keeps its storage key, so its weights, reps and history stay with it.
+function promoteMain(rid, exId, name, cue, disc, type, group) {
+  const r = getRoutine(rid), ex = r && r.exercises.find(e => e.id === exId);
+  if (!ex || String(ex.name).toLowerCase() === name.toLowerCase()) return;
+  const sk = rid + '|' + exId, raw = alts[sk], sel = raw === true ? 1 : (raw || 0);
+  const oldMainKey = ex.mk || 'a';
+  const selKey = sel === 0 ? oldMainKey : ((ex.alts[sel - 1] || {}).k || oldMainKey);
+  const i = ex.alts.findIndex(a => String(a.name).toLowerCase() === name.toLowerCase());
+  const newKey = i >= 0 ? ex.alts.splice(i, 1)[0].k : newAltKey(ex);
+  const oldLabel = { machine:'Machine', db:'Dumbbell', core:'Core', finisher:'Optional' }[ex.group] || '';
+  const demoted = { k: oldMainKey, name: ex.name, cue: ex.cue || '' };
+  if (ex.mdisc) demoted.disc = ex.mdisc;
+  demoted.type = ex.mtype || oldLabel;
+  ex.alts.forEach(a => { if (!a.type) a.type = oldLabel; });   // alts keep the slot's old label
+  ex.alts.unshift(demoted);
+  ex.name = name; ex.cue = cue; ex.mk = newKey; ex.mdisc = disc; ex.mtype = type;
+  if (group) ex.group = group;
+  // someone on the old main moves to the new compound main; any other choice is kept
+  if (selKey === oldMainKey || selKey === newKey) alts[sk] = 0;
+  else { const j = ex.alts.findIndex(a => a.k === selKey); alts[sk] = j >= 0 ? j + 1 : 0; }
+  save(S.alts, alts);
 }
 if (_ver < 4) addAltOnce('B', 'brow', 'Chest-Supported DB Row', 'Bench at 30–45° · chest on the pad, DBs hanging straight down · row elbows back toward your hips · squeeze 1 sec · set the DBs on the floor before you climb off');
 if (_ver < 5) {
@@ -1178,7 +1204,19 @@ if (_ver < 14) {
   const _lp = _bl && _bl.alts.find(a => a.name === 'Leg Press');
   if (_lp) { _lp.name = 'Hammer Linear Leg Press'; _lp.cue = 'Back + hips flat on the pad · feet shoulder-width, mid-plate · lower until thighs are about parallel · STOP before your tailbone or lower back lifts · drive through mid-foot · sled alone is 53 kg'; }
 }
-localStorage.setItem(S.ver, '14');
+if (_ver < 15) {
+  // Day A: big compound lifts become the main exercises
+  promoteMain('A', 'chest', 'Barbell Bench Press', 'In a rack with safety arms just below chest height · feet flat, glutes + upper back on the bench, only a small natural arch · lower the bar to your lower chest, elbows about 45° · press up without bouncing · leave 1–2 reps in the tank', 'Back supported on the bench · low spinal load', 'Compound', 'compound');
+  promoteMain('A', 'legs', 'Barbell Back Squat', 'In a rack with safety pins just below your lowest point · bar across your upper back, big breath and brace hard before every rep · sit down to parallel, stop before your pelvis tucks under · drive up through mid-foot · first weeks: empty bar, then add 2.5 kg at a time', 'Loads the spine: build up slowly · stop if you feel pain or tingling down a leg', 'Compound', 'compound');
+  promoteMain('A', 'pull', 'Pull-Up', 'Full hang, pull your shoulders down first · drive elbows to your ribs, chest toward the bar · lower all the way under control · no kipping or swinging · under 5 clean reps? use Assisted Pull-Up', 'Hanging decompresses the spine', 'Compound', 'compound');
+  promoteMain('A', 'press', 'Seated Barbell Overhead Press', 'Upright bench with a back pad, in a rack or Smith machine · bar starts at your collarbone · press straight up, head through at the top · back stays flat on the pad, no lower-back arch · start lighter than feels necessary', 'Seated with back support avoids the lower-back strain of a standing press', 'Compound', 'compound');
+  // Day B: the same lifts as options
+  addAltOnce('B', 'bchest', 'Incline Barbell Bench Press', 'Bench about 30° in a rack, safeties set · back + head on the bench, feet flat · lower the bar to your upper chest · press up and slightly back · leave 1–2 reps in the tank', 'Back supported on the bench · low spinal load', 'Compound');
+  addAltOnce('B', 'blegs', 'Barbell Back Squat', 'In a rack with safety pins just below your lowest point · bar across your upper back, big breath and brace hard before every rep · sit down to parallel, stop before your pelvis tucks under · drive up through mid-foot · first weeks: empty bar, then add 2.5 kg at a time', 'Loads the spine: build up slowly · stop if you feel pain or tingling down a leg', 'Compound');
+  addAltOnce('B', 'bpull', 'Pull-Up', 'Full hang, pull your shoulders down first · drive elbows to your ribs, chest toward the bar · lower all the way under control · no kipping or swinging · under 5 clean reps? use Assisted Pull-Up', 'Hanging decompresses the spine', 'Compound');
+  addAltOnce('B', 'bpress', 'Seated Barbell Overhead Press', 'Upright bench with a back pad, in a rack or Smith machine · bar starts at your collarbone · press straight up, head through at the top · back stays flat on the pad, no lower-back arch · start lighter than feels necessary', 'Seated with back support avoids the lower-back strain of a standing press', 'Compound');
+}
+localStorage.setItem(S.ver, '15');
 save(S.routines, routines);
 Object.keys(alts).forEach(k => { const v = alts[k]; alts[k] = v === true ? 1 : (typeof v === 'number' ? v : 0); });
 save(S.alts, alts);
@@ -1372,7 +1410,7 @@ function buildCard(rid, ex) {
   const nums = setsOf(ex);
   const noteVal = notes[ak(rid, ex.id)] || '';
 
-  const tagLabel = { machine:'Machine', db:'Dumbbell', core:'Core', finisher:'Optional' }[ex.group] || 'Machine';
+  const tagLabel = v.type || { machine:'Machine', db:'Dumbbell', core:'Core', finisher:'Optional', compound:'Compound' }[ex.group] || 'Machine';
   const lastRepStr = (lastReps && lastReps.some(x => x > 0))
     ? nums.map(s => (lastReps[s - 1] > 0) ? lastReps[s - 1] : '–').join('/') : '';
   const isPB = curW && lastW && parseFloat(curW) > parseFloat(lastW);
@@ -1424,7 +1462,7 @@ function buildCard(rid, ex) {
     <div class="ex-details">
       <div class="form-cue">
         ${esc(v.cue)}
-        ${ex.disc ? `<div class="disc-note">✓ ${esc(ex.disc)}</div>` : ''}
+        ${v.disc ? `<div class="disc-note">✓ ${esc(v.disc)}</div>` : ''}
       </div>
       <button class="demo-btn" onclick="openDemo('${rid}','${ex.id}')">▶ DEMO VIDEO</button>
       <div class="notes-section">
@@ -1655,7 +1693,7 @@ function renderEditor() {
 }
 function edRow(ex) {
   const open = !!edOpen[ex.id];
-  const groups = [['machine','Machine'],['db','Dumbbell'],['core','Core'],['finisher','Finisher (optional)']];
+  const groups = [['compound','Compound'],['machine','Machine'],['db','Dumbbell'],['core','Core'],['finisher','Finisher (optional)']];
   const opts = groups.map(g => `<option value="${g[0]}" ${ex.group === g[0] ? 'selected' : ''}>${g[1]}</option>`).join('');
   return `<div class="ed-ex ${open ? 'open' : ''}" data-ed="${ex.id}">
     <div class="ed-ex-head" onclick="toggleEd('${ex.id}')">
