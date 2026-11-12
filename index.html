@@ -1148,6 +1148,14 @@ function addAltOnce(rid, exId, name, cue, disc, type) {
 }
 // Make `name` the slot's main exercise. The old main moves to the top of the alts
 // and keeps its storage key, so its weights, reps and history stay with it.
+// Insert a new exercise slot after `afterId` once (skipped if the id or name is already there)
+function insertExerciseOnce(rid, afterId, ex) {
+  const r = getRoutine(rid); if (!r) return;
+  const nm = ex.name.toLowerCase();
+  if (r.exercises.some(e => e.id === ex.id || String(e.name).toLowerCase() === nm)) return;
+  const i = r.exercises.findIndex(e => e.id === afterId);
+  r.exercises.splice(i >= 0 ? i + 1 : r.exercises.length, 0, ex);
+}
 function promoteMain(rid, exId, name, cue, disc, type, group) {
   const r = getRoutine(rid), ex = r && r.exercises.find(e => e.id === exId);
   if (!ex || String(ex.name).toLowerCase() === name.toLowerCase()) return;
@@ -1216,7 +1224,23 @@ if (_ver < 15) {
   addAltOnce('B', 'bpull', 'Pull-Up', 'Full hang, pull your shoulders down first · drive elbows to your ribs, chest toward the bar · lower all the way under control · no kipping or swinging · under 5 clean reps? use Assisted Pull-Up', 'Hanging decompresses the spine', 'Compound');
   addAltOnce('B', 'bpress', 'Seated Barbell Overhead Press', 'Upright bench with a back pad, in a rack or Smith machine · bar starts at your collarbone · press straight up, head through at the top · back stays flat on the pad, no lower-back arch · start lighter than feels necessary', 'Seated with back support avoids the lower-back strain of a standing press', 'Compound');
 }
-localStorage.setItem(S.ver, '15');
+if (_ver < 16) {
+  // Day B: hip-and-glute slot after the leg exercise
+  insertExerciseOnce('B', 'blegs', {
+    id: 'bhinge', name: 'Hip Thrust Machine', group: 'machine', sets: 3, repMin: 10, repMax: 12,
+    cue: 'Upper back on the pad, belt or pad across your hips · feet flat, shins vertical at the top · tuck your chin and keep ribs down · drive through your heels, squeeze glutes hard for 1 sec at the top · stop when hips are level with your body, never arch past it · 3 sec lower',
+    disc: 'Heavy glute + hamstring work with your back supported',
+    alts: [
+      { k: 'b', name: 'Trap Bar Deadlift (high handles)', type: 'Compound',
+        cue: 'Stand in the middle of the bar, use the HIGH handles · hips back, chest up, back flat and braced before the bar moves · push the floor away, stand tall, no leaning back at the top · lower under control · start light, add 2.5–5 kg a session',
+        disc: 'Safest deadlift variation, but it still loads the spine: light, slow progress, stop if you feel pain or tingling down a leg' },
+      { k: 'c', name: '45° Back Extension', type: 'Bodyweight',
+        cue: 'Pad just below your hip bones · hinge at the hips with a flat back, not by rounding · rise until your body is in a straight line, never past it · slow and controlled · bodyweight only to start',
+        disc: 'Strengthens the muscles that protect your lower back' }
+    ]
+  });
+}
+localStorage.setItem(S.ver, '16');
 save(S.routines, routines);
 Object.keys(alts).forEach(k => { const v = alts[k]; alts[k] = v === true ? 1 : (typeof v === 'number' ? v : 0); });
 save(S.alts, alts);
