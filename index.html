@@ -1240,7 +1240,16 @@ if (_ver < 16) {
     ]
   });
 }
-localStorage.setItem(S.ver, '16');
+if (_ver < 17) {
+  // Pull-Up becomes Day B's main too; both days cue the neutral handles first
+  const _pu = 'Start on the neutral handles (palms facing each other, about shoulder-width) · dead hang, pull your shoulders down first · drive elbows to your ribs until your chin clears the handles · lower all the way under control · no kipping or swinging · under 5 clean reps? use Assisted Pull-Up · 8+ reps? try the wide overhand bar';
+  promoteMain('B', 'bpull', 'Pull-Up', _pu, 'Hanging decompresses the spine', 'Compound', 'compound');
+  ['A|pull', 'B|bpull'].forEach(id => {
+    const [rid, exId] = id.split('|'), r = getRoutine(rid), ex = r && r.exercises.find(e => e.id === exId);
+    if (ex && ex.name === 'Pull-Up') ex.cue = _pu;
+  });
+}
+localStorage.setItem(S.ver, '17');
 save(S.routines, routines);
 Object.keys(alts).forEach(k => { const v = alts[k]; alts[k] = v === true ? 1 : (typeof v === 'number' ? v : 0); });
 save(S.alts, alts);
