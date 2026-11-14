@@ -871,7 +871,7 @@ header {
 
   <!-- LOG -->
   <div class="log-btn-wrap">
-    <button class="log-btn" onclick="logSession()">✓ &nbsp;LOG SESSION &amp; RESET</button>
+    <button class="log-btn" onclick="logSession()">✓ &nbsp;LOG SESSION &amp; RESET</button><button class="demo-btn" onclick="window.CompassWorkout && CompassWorkout.discard()">Discard pending upload</button>
   </div>
   <div class="util-row">
     <button class="util-btn" onclick="exportData()">⬇ EXPORT BACKUP</button>
@@ -1640,46 +1640,41 @@ function updateProgress() {
 
 /* ── LOG SESSION ── */
 function logSession() {
-  const rid = activeId;
-  const r = getRoutine(rid);
-  if (!r) return;
-  const mains = r.exercises.filter(e => e.group !== 'finisher');
-  const doneMains = mains.filter(ex => setsOf(ex).every(s => !!checks[ck(rid, ex, s)])).length;
-  const msg = doneMains < mains.length
-    ? 'Only ' + doneMains + '/' + mains.length + ' main lifts done. Log anyway and reset ' + r.name + '?'
-    : 'Log this ' + r.name + ' session and reset for next time?';
-  if (!confirm(msg)) return;
-  let tS = 0, tR = 0;
-  const entries = r.exercises.map(ex => {
-    const vv = variantOf(rid, ex);
-    const w = weights[wkOf(rid, ex)] || '';
-    const reps = setsOf(ex).map(s => repCounts[ck(rid, ex, s)] || 0);
-    const sd = setsOf(ex).filter(s => !!checks[ck(rid, ex, s)]).length;
-    tS += sd; tR += reps.reduce((a, b) => a + b, 0);
-    return { id: ex.id, name: vv.name, vk: vv.key, weight: w, reps: reps, setsDone: sd };
-  }).filter(e => e.weight || e.setsDone > 0 || e.reps.some(v => v > 0));
-  const d = new Date();
-  sessions.push({
-    iso: d.toISOString(),
-    date: d.toLocaleDateString('en-AU', { weekday: 'short', day: '2-digit', month: 'short' }),
-    routineId: rid, routineName: r.name,
-    exercises: entries, totalSets: tS, totalReps: tR
-  });
-  if (sessions.length > 80) sessions = sessions.slice(-80);
-  save(S.sessions, sessions);
-  streak++;
-  localStorage.setItem(S.streak, streak);
-  localStorage.setItem(S.lastDate, sessions[sessions.length - 1].date);
-  Object.keys(checks).forEach(k => { if (k.indexOf(rid + '|') === 0) delete checks[k]; });
-  Object.keys(repCounts).forEach(k => { if (k.indexOf(rid + '|') === 0) delete repCounts[k]; });
-  save(S.checks, checks);
-  save(S.reps, repCounts);
-  warmup = false;
-  localStorage.setItem(S.warmup, '0');
-  activeId = nextRoutineId();
-  localStorage.setItem(S.active, activeId);
-  resetTimer();
-  window.scrollTo({ top: 0, behavior: 'smooth' });
+  if (!window.CompassWorkout) { alert('Compass could not load. Refresh when online. Your workout has not been reset.'); return; }
+  const rid=activeId,r=getRoutine(rid);if(!r)return;
+  const pending=localStorage.getItem('g2_compass_pending');
+  if(pending){CompassWorkout.log({},finishCompassSession);return;}
+  if(!confirm('Save completed sets from '+r.name+' to Compass? Your workout resets only after saving.'))return;
+  const entries=r.exercises.map(ex=>{
+    const vv=variantOf(rid,ex),done=setsOf(ex).filter(s=>!!checks[ck(rid,ex,s)]);
+    const w=weights[wkOf(rid,ex)]??'';
+    return {id:ex.id,name:vv.name,vk:vv.key,weight:w,reps:done.map(s=>repCounts[ck(rid,ex,s)]||0),setsDone:done.length,notes:notes[ak(rid,ex.id)]||''};
+  }).filter(e=>e.setsDone>0);
+  if(!entries.length){alert('Tick at least one completed set before logging.');return;}
+  if(entries.some(e=>e.weight!==''&&(!Number.isFinite(Number(e.weight))||Number(e.weight)<0||Number(e.weight)>2000)||e.reps.some(v=>!Number.isInteger(v)||v<0||v>300)||e.notes.length>2000)){alert('Check weights (0–2000 kg), reps (1–300) and notes (up to 2000 characters). Nothing was reset.');return;}
+  const d=new Date(),snapshot={rid,checks:JSON.stringify(checks),reps:JSON.stringify(repCounts),weights:JSON.stringify(weights),alts:JSON.stringify(alts)};
+  const localSession={iso:d.toISOString(),date:d.toLocaleDateString('en-AU',{weekday:'short',day:'2-digit',month:'short'}),routineId:rid,routineName:r.name,exercises:entries,totalSets:entries.reduce((s,e)=>s+e.setsDone,0),totalReps:entries.reduce((s,e)=>s+e.reps.reduce((a,b)=>a+b,0),0)};
+  const payload={occurred_at:localSession.iso,routine_id:rid,routine_name:r.name,exercises:entries.map(e=>({exercise_id:e.id,variant:String(e.vk||e.name),name:e.name,weight_kg:e.weight===''?null:Number(e.weight),reps:e.reps.map(v=>v>0?v:null),notes:e.notes}))};
+  CompassWorkout.log({payload,localSession,snapshot},finishCompassSession);
+}
+function finishCompassSession(pending) {
+  const snap=pending.snapshot,rid=snap.rid,entry={...pending.localSession,compassId:pending.id};
+  const existing=sessions.some(s=>s.compassId===pending.id);
+  if(!existing){
+    const next=[...sessions,entry].slice(-80);
+    localStorage.setItem(S.sessions,JSON.stringify(next));sessions=next;
+    streak++;localStorage.setItem(S.streak,String(streak));localStorage.setItem(S.lastDate,entry.date);
+  }
+  const unchanged=snap.checks===JSON.stringify(checks)&&snap.reps===JSON.stringify(repCounts)&&snap.weights===JSON.stringify(weights)&&snap.alts===JSON.stringify(alts);
+  if(unchanged){
+    const nextChecks={...checks},nextReps={...repCounts};
+    Object.keys(nextChecks).forEach(k=>{if(k.indexOf(rid+'|')===0)delete nextChecks[k]});
+    Object.keys(nextReps).forEach(k=>{if(k.indexOf(rid+'|')===0)delete nextReps[k]});
+    localStorage.setItem(S.checks,JSON.stringify(nextChecks));localStorage.setItem(S.reps,JSON.stringify(nextReps));checks=nextChecks;repCounts=nextReps;
+    warmup=false;localStorage.setItem(S.warmup,'0');
+    if(activeId===rid){activeId=nextRoutineId();localStorage.setItem(S.active,activeId)}
+    resetTimer();window.scrollTo({top:0,behavior:'smooth'});
+  } else alert('Your saved session is in Compass. Any changes on this screen have been kept.');
   render();
 }
 
@@ -1913,5 +1908,6 @@ render();
 setPhase('<strong>READY</strong>tap set to start');
 resumeTimer();
 </script>
+<script src="https://calorie-compass-private-shu2.onrender.com/compass/static/workout-client.js"></script>
 </body>
 </html>
